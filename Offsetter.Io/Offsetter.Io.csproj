@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+		<RootNamespace>Offsetter.Io</RootNamespace>
+		<AssemblyName>Offsetter.Io</AssemblyName>
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Nullable>enable</Nullable>
+		<LangVersion>9.0</LangVersion>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Offsetter.Entities\Offsetter.Entities.csproj" />
+    <ProjectReference Include="..\Offsetter.Math\Offsetter.Math.csproj" />
+  </ItemGroup>
+
+</Project>
