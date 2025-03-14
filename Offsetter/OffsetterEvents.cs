@@ -66,6 +66,8 @@ namespace Offsetter
             }
         }
 
+        private bool showDegrees = false;
+
         private void MouseUpHandler(object sender, MouseEventArgs e)
         {
             // Log($"Mouse up: ({e.X},{e.Y})");
@@ -105,8 +107,18 @@ namespace Offsetter
             else if (viewMode == ViewMode.Picking)
             {
                 viewPtLocked = false;
+
                 GCurve curve = ViewPick(e.Location);
-                viewMode = ViewMode.Static;
+                if (curve == null)
+                    return;
+
+                Canonical dialog = new Canonical(curve);
+                dialog.ShowDegrees = showDegrees;
+
+                dialog.ShowDialog();
+                showDegrees = dialog.ShowDegrees;
+
+                // viewMode = ViewMode.Static;  -- decided treat as modal 
             }
         }
 
