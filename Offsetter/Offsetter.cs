@@ -309,12 +309,30 @@ namespace Offsetter
 
         private void MenusItemsEnable(bool enable)
         {
-            uniformOffsetGeometryMenuItem.Enabled = (enable && (ichains.Count > 0));
+            bool haveInputGeometry = (ichains.Count > 0);
+
+            // Geometry Menu Items.
+            uniformOffsetGeometryMenuItem.Enabled = (enable && haveInputGeometry);
             nonUniformOffsetGeometryMenuItem.Enabled = (enable && (ichains.Count == 2));
             nestGeometryMenuItem.Enabled = (enable && (ichains.Count == 2));
             decomposeGeometryMenuItem.Enabled = (enable && (ichains.Count == 1));
-
             reorderGeometryMenuItem.Enabled = enable;
+            propertiesGeometryMenuItem.Enabled = (enable && (ichains.Count > 0));
+
+            // View Menu Items.
+            panViewMenuItem.Enabled = (enable && haveInputGeometry);
+            windowViewMenuItem.Enabled = (enable && haveInputGeometry);
+            zoomViewMenuItem.Enabled = (enable && haveInputGeometry);
+            fullViewMenuItem.Enabled = (enable && haveInputGeometry);
+            previousViewMenuItem.Enabled = (enable && haveInputGeometry);
+
+            // Context Menu Items.
+            panContextMenuItem.Enabled = (enable && haveInputGeometry);
+            windowContextMenuItem.Enabled = (enable && haveInputGeometry);
+            zoomContextMenuItem.Enabled = (enable && haveInputGeometry);
+            fullViewContextMenuItem.Enabled = (enable && haveInputGeometry);
+            previousViewContextMenuItem.Enabled = (enable && haveInputGeometry);
+
             saveAsContextMenuItem.Enabled = enable;
             saveResultsFileMenuItem.Enabled = enable;
 

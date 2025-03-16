@@ -64,7 +64,7 @@
             xs.Name = "xs";
             xs.ReadOnly = true;
             xs.Size = new System.Drawing.Size(100, 23);
-            xs.TabIndex = 0;
+            xs.TabIndex = 3;
             // 
             // ys
             // 
@@ -72,7 +72,7 @@
             ys.Name = "ys";
             ys.ReadOnly = true;
             ys.Size = new System.Drawing.Size(100, 23);
-            ys.TabIndex = 1;
+            ys.TabIndex = 5;
             // 
             // type
             // 
@@ -80,16 +80,16 @@
             type.Name = "type";
             type.ReadOnly = true;
             type.Size = new System.Drawing.Size(100, 23);
-            type.TabIndex = 10;
+            type.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Location = new System.Drawing.Point(11, 16);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(31, 15);
-            label1.TabIndex = 11;
-            label1.Text = "Type";
+            label1.Size = new System.Drawing.Size(30, 15);
+            label1.TabIndex = 0;
+            label1.Text = "type";
             // 
             // label2
             // 
@@ -97,7 +97,7 @@
             label2.Location = new System.Drawing.Point(24, 45);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(18, 15);
-            label2.TabIndex = 12;
+            label2.TabIndex = 2;
             label2.Text = "xs";
             // 
             // label3
@@ -106,7 +106,7 @@
             label3.Location = new System.Drawing.Point(163, 45);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(18, 15);
-            label3.TabIndex = 13;
+            label3.TabIndex = 4;
             label3.Text = "ys";
             // 
             // label4
@@ -115,7 +115,7 @@
             label4.Location = new System.Drawing.Point(163, 74);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(19, 15);
-            label4.TabIndex = 17;
+            label4.TabIndex = 8;
             label4.Text = "ye";
             // 
             // label5
@@ -124,7 +124,7 @@
             label5.Location = new System.Drawing.Point(24, 74);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(19, 15);
-            label5.TabIndex = 16;
+            label5.TabIndex = 6;
             label5.Text = "xe";
             // 
             // ye
@@ -133,7 +133,7 @@
             ye.Name = "ye";
             ye.ReadOnly = true;
             ye.Size = new System.Drawing.Size(100, 23);
-            ye.TabIndex = 15;
+            ye.TabIndex = 9;
             // 
             // xe
             // 
@@ -141,7 +141,7 @@
             xe.Name = "xe";
             xe.ReadOnly = true;
             xe.Size = new System.Drawing.Size(100, 23);
-            xe.TabIndex = 14;
+            xe.TabIndex = 7;
             // 
             // arcProperties
             // 
@@ -161,7 +161,7 @@
             arcProperties.Location = new System.Drawing.Point(5, 99);
             arcProperties.Name = "arcProperties";
             arcProperties.Size = new System.Drawing.Size(297, 130);
-            arcProperties.TabIndex = 31;
+            arcProperties.TabIndex = 11;
             // 
             // panel1
             // 
@@ -170,7 +170,7 @@
             panel1.Location = new System.Drawing.Point(39, 90);
             panel1.Name = "panel1";
             panel1.Size = new System.Drawing.Size(239, 36);
-            panel1.TabIndex = 43;
+            panel1.TabIndex = 24;
             // 
             // degrees
             // 
@@ -201,7 +201,7 @@
             label10.Location = new System.Drawing.Point(157, 65);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(19, 15);
-            label10.TabIndex = 42;
+            label10.TabIndex = 22;
             label10.Text = "ae";
             // 
             // label11
@@ -210,7 +210,7 @@
             label11.Location = new System.Drawing.Point(19, 65);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(18, 15);
-            label11.TabIndex = 41;
+            label11.TabIndex = 20;
             label11.Text = "as";
             // 
             // ea
@@ -219,7 +219,7 @@
             ea.Name = "ea";
             ea.ReadOnly = true;
             ea.Size = new System.Drawing.Size(100, 23);
-            ea.TabIndex = 40;
+            ea.TabIndex = 23;
             // 
             // sa
             // 
@@ -227,7 +227,7 @@
             sa.Name = "sa";
             sa.ReadOnly = true;
             sa.Size = new System.Drawing.Size(100, 23);
-            sa.TabIndex = 39;
+            sa.TabIndex = 21;
             // 
             // label8
             // 
@@ -235,7 +235,7 @@
             label8.Location = new System.Drawing.Point(155, 36);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(21, 15);
-            label8.TabIndex = 38;
+            label8.TabIndex = 18;
             label8.Text = "dir";
             // 
             // label9
@@ -244,7 +244,7 @@
             label9.Location = new System.Drawing.Point(13, 36);
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(24, 15);
-            label9.TabIndex = 37;
+            label9.TabIndex = 16;
             label9.Text = "rad";
             // 
             // dir
@@ -253,7 +253,7 @@
             dir.Name = "dir";
             dir.ReadOnly = true;
             dir.Size = new System.Drawing.Size(100, 23);
-            dir.TabIndex = 36;
+            dir.TabIndex = 19;
             // 
             // rad
             // 
@@ -261,7 +261,7 @@
             rad.Name = "rad";
             rad.ReadOnly = true;
             rad.Size = new System.Drawing.Size(100, 23);
-            rad.TabIndex = 35;
+            rad.TabIndex = 17;
             // 
             // label6
             // 
@@ -269,7 +269,7 @@
             label6.Location = new System.Drawing.Point(158, 7);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(19, 15);
-            label6.TabIndex = 34;
+            label6.TabIndex = 14;
             label6.Text = "yc";
             // 
             // label7
@@ -278,7 +278,7 @@
             label7.Location = new System.Drawing.Point(19, 7);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(19, 15);
-            label7.TabIndex = 33;
+            label7.TabIndex = 12;
             label7.Text = "xc";
             // 
             // yc
@@ -287,7 +287,7 @@
             yc.Name = "yc";
             yc.ReadOnly = true;
             yc.Size = new System.Drawing.Size(100, 23);
-            yc.TabIndex = 32;
+            yc.TabIndex = 15;
             // 
             // xc
             // 
@@ -295,7 +295,7 @@
             xc.Name = "xc";
             xc.ReadOnly = true;
             xc.Size = new System.Drawing.Size(100, 23);
-            xc.TabIndex = 31;
+            xc.TabIndex = 13;
             // 
             // Canonical
             // 
