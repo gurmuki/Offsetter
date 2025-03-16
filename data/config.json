@@ -1,0 +1,8 @@
+{
+  "DumpContactCandidatesInternal": false,
+  "DumpContactCandidatesClient": false,
+  "DumpPositionAtClient": false,
+  "DumpChChains": false,
+  "DumpPath": false,
+  "DumpRpts": false
+}
