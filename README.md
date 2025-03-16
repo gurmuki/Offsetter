@@ -10,7 +10,7 @@ Whereas the Minkowski Sum is typically applied to convex shapes this implementat
 
 Currently, all input shapes must be DXF profile entities. The input used by non-uniform offsetting requires the first profile to represent the part outline and the second the tool outline. The latter must be centered at the origin (0,0).
 
-A variety of test data resides in TestData.zip. Debugging output is configured via the file data\config.json.
+Debugging output is configured via the file data\config.json.
 
 Test data reside in TestData.zip (as opposed to individual repository files) to limit repository size/pollution.
 
