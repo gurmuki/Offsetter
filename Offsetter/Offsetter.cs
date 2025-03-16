@@ -240,10 +240,7 @@ namespace Offsetter
             center.Y = (glControl.Height / 2);
         }
 
-        private void glControl_Paint(object? sender, PaintEventArgs e)
-        {
-            Render();
-        }
+        private void glControl_Paint(object? sender, PaintEventArgs e) => Render();
 
         private void FormResize()
         {
@@ -255,109 +252,52 @@ namespace Offsetter
             glControl.Location = new Point(0, 0);
             glControl.Size = mainPanel.Size;
 
-            // this.ClientSize = new Size(dimension, dimension + MainMenuStrip!.Height);
-
-
             this.Invalidate();
         }
 
-        private void PreviewKeyEvent(Keys keyCode)
+        private void fileMenu_DropDownOpening(object sender, EventArgs e)
         {
-            KeyPreviewExecute(keyCode);
-        }
-
-        private void panToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PreviewKeyEvent(Keys.C);
-        }
-
-        private void windowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PreviewKeyEvent(Keys.W);
-        }
-
-        private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PreviewKeyEvent(Keys.Z);
-        }
-
-        private void fullViewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PreviewKeyEvent(Keys.F);
-        }
-
-        private void previousViewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PreviewKeyEvent(Keys.U);
-        }
-
-        private void fileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            reopenToolStripMenuItem.Text = "Reopen";
-            reopenToolStripMenuItem.Enabled = false;
+            reopenFileMenuItem.Text = "Reopen";
+            reopenFileMenuItem.Enabled = false;
 
             string path = Properties.Settings.Default.inputPath;
             if (!String.IsNullOrEmpty(path) && File.Exists(path))
             {
-                reopenToolStripMenuItem.Text += String.Format(" ({0})", Path.GetFileName(path));
-                reopenToolStripMenuItem.Enabled = true;
+                reopenFileMenuItem.Text += String.Format(" ({0})", Path.GetFileName(path));
+                reopenFileMenuItem.Enabled = true;
             }
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DxfOpen(null!);
-        }
+        // File Menu actions.
+        private void openFileMenuItem_Click(object sender, EventArgs e) => DxfOpen(null!);
+        private void reopenFileMenuItem_Click(object sender, EventArgs e) => DxfOpen(Properties.Settings.Default.inputPath);
+        private void saveAsFileMenuItem_Click(object sender, EventArgs e) => DxfSave(null!);
+        private void saveResultsFileMenuItem_Click(object sender, EventArgs e) => ResultSave();
 
-        private void reopenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DxfOpen(Properties.Settings.Default.inputPath);
-        }
+        // Gemoetry Menu actions.
+        private void uniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => UniformOffset();
+        private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => NonUniformOffset();
+        private void nestGeometryMenuItem_Click(object sender, EventArgs e) => Nest();
+        private void decomposeGeometryMenuItem_Click(object sender, EventArgs e) => Decompose();
+        private void toolingGeometryMenuItem_Click(object sender, EventArgs e) => Tooling();
+        private void reorderGeometryMenuItem_Click(object sender, EventArgs e) => Reorder();
+        private void testGeometryMenuItem_Click(object sender, EventArgs e) => Test();
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DxfSave(null!);
-        }
+        // View Menu actions.
+        private void panViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.C);
+        private void windowViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.W);
+        private void zoomViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.Z);
+        private void fullViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.F);
+        private void previousViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.V);
 
-        private void saveresultsdxfToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ResultSave();
-        }
+        // Context Menu actions.
+        private void panContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.C);
+        private void windowContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.W);
+        private void zoomContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.Z);
+        private void fullViewContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.F);
+        private void previousViewContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.V);
 
-        private void uniformOffsetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UniformOffset();
-        }
-
-        private void nonUniformOffsetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NonUniformOffset();
-        }
-
-        private void nestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Nest();
-        }
-
-        private void decomposeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Decompose();
-        }
-
-        private void toolingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Tooling();
-        }
-
-        private void reorderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Reorder();
-        }
-
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Test();
-        }
+        private void PreviewKeyEvent(Keys keyCode) => KeyPreviewExecute(keyCode);
 
         private void MenusEnable(bool enable)
         {
@@ -367,14 +307,14 @@ namespace Offsetter
 
         private void MenusItemsEnable(bool enable)
         {
-            uniformOffsetToolStripMenuItem.Enabled = (enable && (ichains.Count > 0));
-            nonUniformOffsetToolStripMenuItem.Enabled = (enable && (ichains.Count == 2));
-            nestToolStripMenuItem.Enabled = (enable && (ichains.Count == 2));
-            decomposeToolStripMenuItem.Enabled = (enable && (ichains.Count == 1));
+            uniformOffsetGeometryMenuItem.Enabled = (enable && (ichains.Count > 0));
+            nonUniformOffsetGeometryMenuItem.Enabled = (enable && (ichains.Count == 2));
+            nestGeometryMenuItem.Enabled = (enable && (ichains.Count == 2));
+            decomposeGeometryMenuItem.Enabled = (enable && (ichains.Count == 1));
 
-            reorderToolStripMenuItem.Enabled = enable;
-            saveAsToolStripMenuItem.Enabled = enable;
-            saveresultsdxfToolStripMenuItem.Enabled = enable;
+            reorderGeometryMenuItem.Enabled = enable;
+            saveAsContextMenuItem.Enabled = enable;
+            saveResultsFileMenuItem.Enabled = enable;
 
             if (!enable)
                 ToolingMenuItemEnable(false);
@@ -382,7 +322,7 @@ namespace Offsetter
 
         private void ToolingMenuItemEnable(bool enable)
         {
-            toolingToolStripMenuItem.Enabled = enable;
+            toolingGeometryMenuItem.Enabled = enable;
             if (!enable)
                 toolingEnabled = false;
         }
@@ -391,7 +331,6 @@ namespace Offsetter
         {
             glControl.MakeCurrent();
 
-            // GL.ClearColor(Color.WhiteSmoke);
             GL.ClearColor(Color.White);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 

@@ -45,27 +45,34 @@ namespace Offsetter
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Offsetter));
             menuStrip1 = new MenuStrip();
             fileMenu = new ToolStripMenuItem();
-            openToolStripMenuItem = new ToolStripMenuItem();
-            reopenToolStripMenuItem = new ToolStripMenuItem();
-            saveresultsdxfToolStripMenuItem = new ToolStripMenuItem();
-            toolStripSeparator1 = new ToolStripSeparator();
-            testToolStripMenuItem = new ToolStripMenuItem();
+            openFileMenuItem = new ToolStripMenuItem();
+            reopenFileMenuItem = new ToolStripMenuItem();
+            saveResultsFileMenuItem = new ToolStripMenuItem();
+            fileMenuSeparator1 = new ToolStripSeparator();
+            testFileMenuItem = new ToolStripMenuItem();
             geometryMenu = new ToolStripMenuItem();
-            uniformOffsetToolStripMenuItem = new ToolStripMenuItem();
-            nonUniformOffsetToolStripMenuItem = new ToolStripMenuItem();
-            nestToolStripMenuItem = new ToolStripMenuItem();
-            decomposeToolStripMenuItem = new ToolStripMenuItem();
-            toolingToolStripMenuItem = new ToolStripMenuItem();
-            reorderToolStripMenuItem = new ToolStripMenuItem();
-            saveAsToolStripMenuItem = new ToolStripMenuItem();
+            uniformOffsetGeometryMenuItem = new ToolStripMenuItem();
+            nonUniformOffsetGeometryMenuItem = new ToolStripMenuItem();
+            nestGeometryMenuItem = new ToolStripMenuItem();
+            decomposeGeometryMenuItem = new ToolStripMenuItem();
+            toolingGeometryMenuItem = new ToolStripMenuItem();
+            reorderGeometryMenuItem = new ToolStripMenuItem();
+            viewMenu = new ToolStripMenuItem();
+            panViewMenuItem = new ToolStripMenuItem();
+            windowViewMenuItem = new ToolStripMenuItem();
+            zoomViewMenuItem = new ToolStripMenuItem();
+            viewMenuSeparator1 = new ToolStripSeparator();
+            fullViewMenuItem = new ToolStripMenuItem();
+            previousViewMenuItem = new ToolStripMenuItem();
+            saveAsContextMenuItem = new ToolStripMenuItem();
             viewPopMenu = new ContextMenuStrip(components);
-            panToolStripMenuItem = new ToolStripMenuItem();
-            windowToolStripMenuItem = new ToolStripMenuItem();
-            zoomToolStripMenuItem = new ToolStripMenuItem();
-            toolStripSeparator2 = new ToolStripSeparator();
-            fullViewToolStripMenuItem = new ToolStripMenuItem();
-            previousViewToolStripMenuItem = new ToolStripMenuItem();
-            toolStripSeparator3 = new ToolStripSeparator();
+            panContextMenuItem = new ToolStripMenuItem();
+            windowContextMenuItem = new ToolStripMenuItem();
+            zoomContextMenuItem = new ToolStripMenuItem();
+            contextMenuSeparator1 = new ToolStripSeparator();
+            fullViewContextMenuItem = new ToolStripMenuItem();
+            previousViewContextMenuItem = new ToolStripMenuItem();
+            contextMenuSeparator2 = new ToolStripSeparator();
             toolTip = new ToolTip(components);
             mainPanel = new Panel();
             glControl = new GLControl();
@@ -77,7 +84,7 @@ namespace Offsetter
             // menuStrip1
             // 
             menuStrip1.BackColor = SystemColors.ScrollBar;
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileMenu, geometryMenu });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileMenu, geometryMenu, viewMenu });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(1048, 24);
@@ -86,157 +93,209 @@ namespace Offsetter
             // 
             // fileMenu
             // 
-            fileMenu.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, reopenToolStripMenuItem, saveresultsdxfToolStripMenuItem, toolStripSeparator1, testToolStripMenuItem });
+            fileMenu.DropDownItems.AddRange(new ToolStripItem[] { openFileMenuItem, reopenFileMenuItem, saveResultsFileMenuItem, fileMenuSeparator1, testFileMenuItem });
             fileMenu.Name = "fileMenu";
             fileMenu.Size = new Size(37, 20);
             fileMenu.Text = "File";
-            fileMenu.DropDownOpening += fileToolStripMenuItem_DropDownOpening;
+            fileMenu.DropDownOpening += fileMenu_DropDownOpening;
             // 
-            // openToolStripMenuItem
+            // openFileMenuItem
             // 
-            openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(180, 22);
-            openToolStripMenuItem.Text = "Open";
-            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
+            openFileMenuItem.Name = "openFileMenuItem";
+            openFileMenuItem.Size = new Size(168, 22);
+            openFileMenuItem.Text = "Open";
+            openFileMenuItem.Click += openFileMenuItem_Click;
             // 
-            // reopenToolStripMenuItem
+            // reopenFileMenuItem
             // 
-            reopenToolStripMenuItem.Name = "reopenToolStripMenuItem";
-            reopenToolStripMenuItem.Size = new Size(180, 22);
-            reopenToolStripMenuItem.Text = "Reopen";
-            reopenToolStripMenuItem.Click += reopenToolStripMenuItem_Click;
+            reopenFileMenuItem.Name = "reopenFileMenuItem";
+            reopenFileMenuItem.Size = new Size(168, 22);
+            reopenFileMenuItem.Text = "Reopen";
+            reopenFileMenuItem.Click += reopenFileMenuItem_Click;
             // 
-            // saveresultsdxfToolStripMenuItem
+            // saveResultsFileMenuItem
             // 
-            saveresultsdxfToolStripMenuItem.Name = "saveresultsdxfToolStripMenuItem";
-            saveresultsdxfToolStripMenuItem.Size = new Size(180, 22);
-            saveresultsdxfToolStripMenuItem.Text = "Save (_results.dxf)";
-            saveresultsdxfToolStripMenuItem.Click += saveresultsdxfToolStripMenuItem_Click;
+            saveResultsFileMenuItem.Name = "saveResultsFileMenuItem";
+            saveResultsFileMenuItem.Size = new Size(168, 22);
+            saveResultsFileMenuItem.Text = "Save (_results.dxf)";
+            saveResultsFileMenuItem.Click += saveResultsFileMenuItem_Click;
             // 
-            // toolStripSeparator1
+            // fileMenuSeparator1
             // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(177, 6);
+            fileMenuSeparator1.Name = "fileMenuSeparator1";
+            fileMenuSeparator1.Size = new Size(165, 6);
             // 
-            // testToolStripMenuItem
+            // testFileMenuItem
             // 
-            testToolStripMenuItem.Name = "testToolStripMenuItem";
-            testToolStripMenuItem.Size = new Size(180, 22);
-            testToolStripMenuItem.Text = "Test";
-            testToolStripMenuItem.Click += testToolStripMenuItem_Click;
+            testFileMenuItem.Name = "testFileMenuItem";
+            testFileMenuItem.Size = new Size(168, 22);
+            testFileMenuItem.Text = "Test";
+            testFileMenuItem.Click += testGeometryMenuItem_Click;
             // 
             // geometryMenu
             // 
-            geometryMenu.DropDownItems.AddRange(new ToolStripItem[] { uniformOffsetToolStripMenuItem, nonUniformOffsetToolStripMenuItem, nestToolStripMenuItem, decomposeToolStripMenuItem, toolingToolStripMenuItem, reorderToolStripMenuItem });
+            geometryMenu.DropDownItems.AddRange(new ToolStripItem[] { uniformOffsetGeometryMenuItem, nonUniformOffsetGeometryMenuItem, nestGeometryMenuItem, decomposeGeometryMenuItem, toolingGeometryMenuItem, reorderGeometryMenuItem });
             geometryMenu.Name = "geometryMenu";
             geometryMenu.Size = new Size(71, 20);
             geometryMenu.Text = "Geometry";
             // 
-            // uniformOffsetToolStripMenuItem
+            // uniformOffsetGeometryMenuItem
             // 
-            uniformOffsetToolStripMenuItem.Name = "uniformOffsetToolStripMenuItem";
-            uniformOffsetToolStripMenuItem.Size = new Size(174, 22);
-            uniformOffsetToolStripMenuItem.Text = "Uniform Offset";
-            uniformOffsetToolStripMenuItem.Click += uniformOffsetToolStripMenuItem_Click;
+            uniformOffsetGeometryMenuItem.Name = "uniformOffsetGeometryMenuItem";
+            uniformOffsetGeometryMenuItem.Size = new Size(180, 22);
+            uniformOffsetGeometryMenuItem.Text = "Uniform Offset";
+            uniformOffsetGeometryMenuItem.Click += uniformOffsetGeometryMenuItem_Click;
             // 
-            // nonUniformOffsetToolStripMenuItem
+            // nonUniformOffsetGeometryMenuItem
             // 
-            nonUniformOffsetToolStripMenuItem.Name = "nonUniformOffsetToolStripMenuItem";
-            nonUniformOffsetToolStripMenuItem.Size = new Size(174, 22);
-            nonUniformOffsetToolStripMenuItem.Text = "Non-uniform Offset";
-            nonUniformOffsetToolStripMenuItem.Click += nonUniformOffsetToolStripMenuItem_Click;
+            nonUniformOffsetGeometryMenuItem.Name = "nonUniformOffsetGeometryMenuItem";
+            nonUniformOffsetGeometryMenuItem.Size = new Size(180, 22);
+            nonUniformOffsetGeometryMenuItem.Text = "Non-uniform Offset";
+            nonUniformOffsetGeometryMenuItem.Click += nonUniformOffsetGeometryMenuItem_Click;
             // 
-            // nestToolStripMenuItem
+            // nestGeometryMenuItem
             // 
-            nestToolStripMenuItem.Name = "nestToolStripMenuItem";
-            nestToolStripMenuItem.Size = new Size(174, 22);
-            nestToolStripMenuItem.Text = "Nest";
-            nestToolStripMenuItem.Click += nestToolStripMenuItem_Click;
+            nestGeometryMenuItem.Name = "nestGeometryMenuItem";
+            nestGeometryMenuItem.Size = new Size(180, 22);
+            nestGeometryMenuItem.Text = "Nest";
+            nestGeometryMenuItem.Click += nestGeometryMenuItem_Click;
             // 
-            // decomposeToolStripMenuItem
+            // decomposeGeometryMenuItem
             // 
-            decomposeToolStripMenuItem.Name = "decomposeToolStripMenuItem";
-            decomposeToolStripMenuItem.Size = new Size(174, 22);
-            decomposeToolStripMenuItem.Text = "Decompose";
-            decomposeToolStripMenuItem.Click += decomposeToolStripMenuItem_Click;
+            decomposeGeometryMenuItem.Name = "decomposeGeometryMenuItem";
+            decomposeGeometryMenuItem.Size = new Size(180, 22);
+            decomposeGeometryMenuItem.Text = "Decompose";
+            decomposeGeometryMenuItem.Click += decomposeGeometryMenuItem_Click;
             // 
-            // toolingToolStripMenuItem
+            // toolingGeometryMenuItem
             // 
-            toolingToolStripMenuItem.CheckOnClick = true;
-            toolingToolStripMenuItem.Name = "toolingToolStripMenuItem";
-            toolingToolStripMenuItem.Size = new Size(174, 22);
-            toolingToolStripMenuItem.Text = "Tooling";
-            toolingToolStripMenuItem.Click += toolingToolStripMenuItem_Click;
+            toolingGeometryMenuItem.CheckOnClick = true;
+            toolingGeometryMenuItem.Name = "toolingGeometryMenuItem";
+            toolingGeometryMenuItem.Size = new Size(180, 22);
+            toolingGeometryMenuItem.Text = "Tooling";
+            toolingGeometryMenuItem.Click += toolingGeometryMenuItem_Click;
             // 
-            // reorderToolStripMenuItem
+            // reorderGeometryMenuItem
             // 
-            reorderToolStripMenuItem.Name = "reorderToolStripMenuItem";
-            reorderToolStripMenuItem.Size = new Size(174, 22);
-            reorderToolStripMenuItem.Text = "Reorder";
-            reorderToolStripMenuItem.Click += reorderToolStripMenuItem_Click;
+            reorderGeometryMenuItem.Name = "reorderGeometryMenuItem";
+            reorderGeometryMenuItem.Size = new Size(180, 22);
+            reorderGeometryMenuItem.Text = "Reorder";
+            reorderGeometryMenuItem.Click += reorderGeometryMenuItem_Click;
             // 
-            // saveAsToolStripMenuItem
+            // viewMenu
             // 
-            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(161, 22);
-            saveAsToolStripMenuItem.Text = "Save As ...";
-            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
+            viewMenu.DropDownItems.AddRange(new ToolStripItem[] { panViewMenuItem, windowViewMenuItem, zoomViewMenuItem, viewMenuSeparator1, fullViewMenuItem, previousViewMenuItem });
+            viewMenu.Name = "viewMenu";
+            viewMenu.Size = new Size(44, 20);
+            viewMenu.Text = "View";
+            // 
+            // panViewMenuItem
+            // 
+            panViewMenuItem.Name = "panViewMenuItem";
+            panViewMenuItem.ShortcutKeyDisplayString = "C";
+            panViewMenuItem.Size = new Size(180, 22);
+            panViewMenuItem.Text = "Pan";
+            panViewMenuItem.Click += panViewMenuItem_Click;
+            // 
+            // windowViewMenuItem
+            // 
+            windowViewMenuItem.Name = "windowViewMenuItem";
+            windowViewMenuItem.ShortcutKeyDisplayString = "W";
+            windowViewMenuItem.Size = new Size(180, 22);
+            windowViewMenuItem.Text = "Window";
+            windowViewMenuItem.Click += windowViewMenuItem_Click;
+            // 
+            // zoomViewMenuItem
+            // 
+            zoomViewMenuItem.Name = "zoomViewMenuItem";
+            zoomViewMenuItem.ShortcutKeyDisplayString = "Z";
+            zoomViewMenuItem.Size = new Size(180, 22);
+            zoomViewMenuItem.Text = "Zoom";
+            zoomViewMenuItem.Click += zoomViewMenuItem_Click;
+            // 
+            // viewMenuSeparator1
+            // 
+            viewMenuSeparator1.Name = "viewMenuSeparator1";
+            viewMenuSeparator1.Size = new Size(177, 6);
+            // 
+            // fullViewMenuItem
+            // 
+            fullViewMenuItem.Name = "fullViewMenuItem";
+            fullViewMenuItem.ShortcutKeyDisplayString = "F";
+            fullViewMenuItem.Size = new Size(180, 22);
+            fullViewMenuItem.Text = "Full View";
+            fullViewMenuItem.Click += fullViewMenuItem_Click;
+            // 
+            // previousViewMenuItem
+            // 
+            previousViewMenuItem.Name = "previousViewMenuItem";
+            previousViewMenuItem.ShortcutKeyDisplayString = "V";
+            previousViewMenuItem.Size = new Size(180, 22);
+            previousViewMenuItem.Text = "Previous View";
+            previousViewMenuItem.Click += previousViewMenuItem_Click;
+            // 
+            // saveAsContextMenuItem
+            // 
+            saveAsContextMenuItem.Name = "saveAsContextMenuItem";
+            saveAsContextMenuItem.Size = new Size(161, 22);
+            saveAsContextMenuItem.Text = "Save As ...";
+            saveAsContextMenuItem.Click += saveAsFileMenuItem_Click;
             // 
             // viewPopMenu
             // 
-            viewPopMenu.Items.AddRange(new ToolStripItem[] { panToolStripMenuItem, windowToolStripMenuItem, zoomToolStripMenuItem, toolStripSeparator2, fullViewToolStripMenuItem, previousViewToolStripMenuItem, toolStripSeparator3, saveAsToolStripMenuItem });
+            viewPopMenu.Items.AddRange(new ToolStripItem[] { panContextMenuItem, windowContextMenuItem, zoomContextMenuItem, contextMenuSeparator1, fullViewContextMenuItem, previousViewContextMenuItem, contextMenuSeparator2, saveAsContextMenuItem });
             viewPopMenu.Name = "viewPopMenu";
             viewPopMenu.Size = new Size(162, 148);
             // 
-            // panToolStripMenuItem
+            // panContextMenuItem
             // 
-            panToolStripMenuItem.Name = "panToolStripMenuItem";
-            panToolStripMenuItem.ShortcutKeyDisplayString = "C";
-            panToolStripMenuItem.Size = new Size(161, 22);
-            panToolStripMenuItem.Text = "Pan";
-            panToolStripMenuItem.Click += panToolStripMenuItem_Click;
+            panContextMenuItem.Name = "panContextMenuItem";
+            panContextMenuItem.ShortcutKeyDisplayString = "C";
+            panContextMenuItem.Size = new Size(161, 22);
+            panContextMenuItem.Text = "Pan";
+            panContextMenuItem.Click += panContextMenuItem_Click;
             // 
-            // windowToolStripMenuItem
+            // windowContextMenuItem
             // 
-            windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            windowToolStripMenuItem.ShortcutKeyDisplayString = "W";
-            windowToolStripMenuItem.Size = new Size(161, 22);
-            windowToolStripMenuItem.Text = "Window";
-            windowToolStripMenuItem.Click += windowToolStripMenuItem_Click;
+            windowContextMenuItem.Name = "windowContextMenuItem";
+            windowContextMenuItem.ShortcutKeyDisplayString = "W";
+            windowContextMenuItem.Size = new Size(161, 22);
+            windowContextMenuItem.Text = "Window";
+            windowContextMenuItem.Click += windowContextMenuItem_Click;
             // 
-            // zoomToolStripMenuItem
+            // zoomContextMenuItem
             // 
-            zoomToolStripMenuItem.Name = "zoomToolStripMenuItem";
-            zoomToolStripMenuItem.ShortcutKeyDisplayString = "Z";
-            zoomToolStripMenuItem.Size = new Size(161, 22);
-            zoomToolStripMenuItem.Text = "Zoom";
-            zoomToolStripMenuItem.Click += zoomToolStripMenuItem_Click;
+            zoomContextMenuItem.Name = "zoomContextMenuItem";
+            zoomContextMenuItem.ShortcutKeyDisplayString = "Z";
+            zoomContextMenuItem.Size = new Size(161, 22);
+            zoomContextMenuItem.Text = "Zoom";
+            zoomContextMenuItem.Click += zoomContextMenuItem_Click;
             // 
-            // toolStripSeparator2
+            // contextMenuSeparator1
             // 
-            toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(158, 6);
+            contextMenuSeparator1.Name = "contextMenuSeparator1";
+            contextMenuSeparator1.Size = new Size(158, 6);
             // 
-            // fullViewToolStripMenuItem
+            // fullViewContextMenuItem
             // 
-            fullViewToolStripMenuItem.Name = "fullViewToolStripMenuItem";
-            fullViewToolStripMenuItem.ShortcutKeyDisplayString = "F";
-            fullViewToolStripMenuItem.Size = new Size(161, 22);
-            fullViewToolStripMenuItem.Text = "Full View";
-            fullViewToolStripMenuItem.Click += fullViewToolStripMenuItem_Click;
+            fullViewContextMenuItem.Name = "fullViewContextMenuItem";
+            fullViewContextMenuItem.ShortcutKeyDisplayString = "F";
+            fullViewContextMenuItem.Size = new Size(161, 22);
+            fullViewContextMenuItem.Text = "Full View";
+            fullViewContextMenuItem.Click += fullViewContextMenuItem_Click;
             // 
-            // previousViewToolStripMenuItem
+            // previousViewContextMenuItem
             // 
-            previousViewToolStripMenuItem.Name = "previousViewToolStripMenuItem";
-            previousViewToolStripMenuItem.ShortcutKeyDisplayString = "V";
-            previousViewToolStripMenuItem.Size = new Size(161, 22);
-            previousViewToolStripMenuItem.Text = "Previous View";
-            previousViewToolStripMenuItem.Click += previousViewToolStripMenuItem_Click;
+            previousViewContextMenuItem.Name = "previousViewContextMenuItem";
+            previousViewContextMenuItem.ShortcutKeyDisplayString = "V";
+            previousViewContextMenuItem.Size = new Size(161, 22);
+            previousViewContextMenuItem.Text = "Previous View";
+            previousViewContextMenuItem.Click += previousViewContextMenuItem_Click;
             // 
-            // toolStripSeparator3
+            // contextMenuSeparator2
             // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(158, 6);
+            contextMenuSeparator2.Name = "contextMenuSeparator2";
+            contextMenuSeparator2.Size = new Size(158, 6);
             // 
             // mainPanel
             // 
@@ -295,29 +354,36 @@ namespace Offsetter
 
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileMenu;
-        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem openFileMenuItem;
         private ToolStripMenuItem geometryMenu;
-        private ToolStripMenuItem uniformOffsetToolStripMenuItem;
-        private ToolStripMenuItem saveAsToolStripMenuItem;
-        private ToolStripMenuItem saveresultsdxfToolStripMenuItem;
-        private ToolStripMenuItem reopenToolStripMenuItem;
-        private ToolStripMenuItem reorderToolStripMenuItem;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripMenuItem testToolStripMenuItem;
-        private ToolStripMenuItem toolingToolStripMenuItem;
-        private ToolStripMenuItem nonUniformOffsetToolStripMenuItem;
-        private ToolStripMenuItem decomposeToolStripMenuItem;
-        private ToolStripMenuItem nestToolStripMenuItem;
+        private ToolStripMenuItem uniformOffsetGeometryMenuItem;
+        private ToolStripMenuItem saveAsContextMenuItem;
+        private ToolStripMenuItem saveResultsFileMenuItem;
+        private ToolStripMenuItem reopenFileMenuItem;
+        private ToolStripMenuItem reorderGeometryMenuItem;
+        private ToolStripSeparator fileMenuSeparator1;
+        private ToolStripMenuItem testFileMenuItem;
+        private ToolStripMenuItem toolingGeometryMenuItem;
+        private ToolStripMenuItem nonUniformOffsetGeometryMenuItem;
+        private ToolStripMenuItem decomposeGeometryMenuItem;
+        private ToolStripMenuItem nestGeometryMenuItem;
         private System.Windows.Forms.ContextMenuStrip viewPopMenu;
-        private System.Windows.Forms.ToolStripMenuItem panToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem panContextMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem windowContextMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem zoomContextMenuItem;
         private System.Windows.Forms.ToolTip toolTip;
-        private ToolStripSeparator toolStripSeparator2;
-        private ToolStripMenuItem fullViewToolStripMenuItem;
-        private ToolStripMenuItem previousViewToolStripMenuItem;
-        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator contextMenuSeparator1;
+        private ToolStripMenuItem fullViewContextMenuItem;
+        private ToolStripMenuItem previousViewContextMenuItem;
+        private ToolStripSeparator contextMenuSeparator2;
         private Panel mainPanel;
         private GLControl glControl;
+        private ToolStripMenuItem viewMenu;
+        private ToolStripMenuItem panViewMenuItem;
+        private ToolStripMenuItem windowViewMenuItem;
+        private ToolStripMenuItem zoomViewMenuItem;
+        private ToolStripSeparator viewMenuSeparator1;
+        private ToolStripMenuItem fullViewMenuItem;
+        private ToolStripMenuItem previousViewMenuItem;
     }
 }
