@@ -273,15 +273,16 @@ namespace Offsetter
         private void reopenFileMenuItem_Click(object sender, EventArgs e) => DxfOpen(Properties.Settings.Default.inputPath);
         private void saveAsFileMenuItem_Click(object sender, EventArgs e) => DxfSave(null!);
         private void saveResultsFileMenuItem_Click(object sender, EventArgs e) => ResultSave();
+        private void testFileMenuItem_Click(object sender, EventArgs e) => Test();
 
-        // Gemoetry Menu actions.
+        // Geometry Menu actions.
         private void uniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => UniformOffset();
         private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => NonUniformOffset();
         private void nestGeometryMenuItem_Click(object sender, EventArgs e) => Nest();
         private void decomposeGeometryMenuItem_Click(object sender, EventArgs e) => Decompose();
         private void toolingGeometryMenuItem_Click(object sender, EventArgs e) => Tooling();
         private void reorderGeometryMenuItem_Click(object sender, EventArgs e) => Reorder();
-        private void testGeometryMenuItem_Click(object sender, EventArgs e) => Test();
+        private void propertiesGeometryMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.P);
 
         // View Menu actions.
         private void panViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.C);
@@ -296,6 +297,7 @@ namespace Offsetter
         private void zoomContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.Z);
         private void fullViewContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.F);
         private void previousViewContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.V);
+        private void propertiesContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.P);
 
         private void PreviewKeyEvent(Keys keyCode) => KeyPreviewExecute(keyCode);
 
