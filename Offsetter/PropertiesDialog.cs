@@ -6,30 +6,52 @@ using System.Windows.Forms;
 
 namespace Offsetter
 {
-    /// <summary>Canonical is a modeless dialog displaying entity properties.</summary>
-    public partial class Canonical : Form
+    // NOTE: I tried using the AutoSize property to manage form resizing
+    // but the behavior appearred to be problematic and not worth the
+    // bother to "fix". Perhaps my ignorance is getting in the way.
+
+    /// <summary>PropertiesDialog is a modeless dialog displaying entity properties.</summary>
+    public partial class PropertiesDialog : Form
     {
+        private const int PADDING = 8;
         private GCurve curve = null!;
-        private Point scrLoc;
-        private Size fullSize;
         private ClosedAction closedAction;
 
         public delegate void ClosedAction();
 
-        public Canonical(ClosedAction f)
+        public PropertiesDialog(Point screenLocation, ClosedAction f)
         {
+            if (f == null)
+                throw new ArgumentNullException();
+
             InitializeComponent();
-            fullSize = this.Size;
+
             closedAction = f;
+
+            FormLocator.Locate(this, screenLocation);
         }
 
         public bool ShowDegrees { get; set; } = false;
 
-        private void Canonical_FormClosing(object sender, FormClosingEventArgs e)
+        private void PropertiesDialog_Load(object sender, EventArgs e)
+        {
+            endptProperties.Visible = false;
+            arcProperties.Visible = false;
+
+            close.Location = new Point(close.Location.X, type.Bottom + PADDING);
+            this.ClientSize = new Size(this.ClientSize.Width, close.Bottom + PADDING);
+        }
+
+        private void Properties_FormClosing(object sender, FormClosingEventArgs e)
         {
             Visible = false;
             e.Cancel = true;
             closedAction();
+        }
+
+        private void close_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         private void radians_CheckedChanged(object sender, EventArgs e)
@@ -45,18 +67,21 @@ namespace Offsetter
             this.Focus();
 
             this.curve = curve;
-            this.scrLoc = screenLocation;
+
+            endptProperties.Visible = true;
 
             if (curve.GetType() == typeof(GLine))
             {
                 arcProperties.Visible = false;
-                this.Size = new System.Drawing.Size(fullSize.Width, fullSize.Height - arcProperties.Height);
+                close.Location = new Point(close.Location.X, endptProperties.Bottom);
             }
             else
             {
                 arcProperties.Visible = true;
-                this.Size = fullSize;
+                close.Location = new Point(close.Location.X, arcProperties.Bottom);
             }
+
+            this.ClientSize = new Size(this.ClientSize.Width, close.Bottom + PADDING);
 
             PropertiesUpdateCore();
         }
@@ -65,6 +90,7 @@ namespace Offsetter
         {
             bool isArc = (curve.GetType() == typeof(GArc));
 
+            id.Text = curve.id.ToString();
             type.Text = (isArc ? " Arc" : "Line");
 
             xs.Text = Format(curve.ps.x);
@@ -85,35 +111,6 @@ namespace Offsetter
 
                 ArcAnglesUpdate();
             }
-
-            if (Owner != null)
-            {
-                // Ensure the dialog is location wholly with the bounds of its owner.
-                Rectangle ownerRect = Owner.RectangleToScreen(Owner.ClientRectangle);
-
-                int dx = this.Width;
-                int dy = this.Height;
-
-                Rectangle thisRect = new Rectangle();
-                for (int i = 0; i < 4; i++)
-                {
-                    Point loc = new Point(scrLoc.X, scrLoc.Y);
-                    if (i == 1)
-                        loc.X -= dx;
-                    else if (i == 2)
-                        loc.Y -= dy;
-                    else if (i == 3)
-                        loc = new Point(scrLoc.X - dx, scrLoc.Y - dy);
-
-                    thisRect = new Rectangle(loc.X, loc.Y, dx, dy);
-                    if (ownerRect.Contains(thisRect))
-                        break;
-                }
-
-                scrLoc = thisRect.Location;
-            }
-
-            FormLocator.Locate(this, scrLoc);
         }
 
         private void ArcAnglesUpdate()

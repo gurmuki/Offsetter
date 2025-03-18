@@ -1002,9 +1002,9 @@ namespace Offsetter.Entities
                     break;
 
                 if (log != null)
-                    log.Add(curve.CanonicalForm());
+                    log.Add(curve.PropertiesForm());
                 else if (GLogger.Active)
-                    GLogger.Log(curve.CanonicalForm());
+                    GLogger.Log(curve.PropertiesForm());
 
                 curve = curve.NextCurve();
             }

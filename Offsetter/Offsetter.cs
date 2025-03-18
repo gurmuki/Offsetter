@@ -83,8 +83,8 @@ namespace Offsetter
         // geoMenuLocation is used as a reference point for displaying dialogs.
         private Point geoMenuLocation;
 
-        // Canonical is a modeless dialog whose lifetime must be managed.
-        private Canonical canonicalDialog = null!;
+        // Properties is a modeless dialog whose lifetime must be managed.
+        private PropertiesDialog propertiesDialog = null!;
         private GCurve selectedCurve = null!;
 
         //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -124,7 +124,7 @@ namespace Offsetter
 
         private void Offsetter_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // NOTE: Whatever the reason, after implementing Canonical as a modeless
+            // NOTE: Whatever the reason, after implementing Properties as a modeless
             // dialog, the main window would no longer close when pressing the X button.
             // It's hardly worth the bother to understand why.
             e.Cancel = false;

@@ -13,8 +13,13 @@ namespace Offsetter
 
             this.Text = title;
 
+            uniformPanel.Visible = true;
+            nonUniformPanel.Visible = false;
+
             this.OffsetSide = ((offsetSide < 0) ? GConst.RIGHT : GConst.LEFT);
             this.OffsetDist = System.Math.Abs(offsetDist);
+
+            this.Size = new Size(226, this.Height);
 
             FormLocator.Locate(this, screenLocation);
         }
@@ -25,15 +30,14 @@ namespace Offsetter
 
             this.Text = title;
 
+            nonUniformPanel.Location = uniformPanel.Location;
+
+            nonUniformPanel.Visible = true;
+            uniformPanel.Visible = false;
+
             this.OffsetSide = ((offsetSide < 0) ? GConst.RIGHT : GConst.LEFT);
 
-            label.Visible = false;
-            offset.Visible = false;
-
-            int dy = ok.Location.Y - offset.Location.Y;
-            ok.Location = new Point(ok.Location.X, offset.Location.Y);
-
-            this.Size = new Size(this.Width, this.Height - dy);
+            this.Size = new Size(226, this.Height);
 
             FormLocator.Locate(this, screenLocation);
         }
@@ -50,7 +54,7 @@ namespace Offsetter
             offset.Text = OffsetDist.ToString();
         }
 
-        private void ok_Click(object sender, EventArgs e)
+        private void accept_Click(object sender, EventArgs e)
         {
             OffsetSide = (left.Checked ? GConst.LEFT : GConst.RIGHT);
 

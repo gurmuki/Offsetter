@@ -84,7 +84,7 @@ namespace Offsetter.Entities
         public sealed override GCurve Clone(GPoint at) { return null; }
         public sealed override GCurve SplitAt(GPoint pt) { return null; }
         public sealed override GPoint PointAtUparam(double uparam) { return null; }
-        public sealed override string CanonicalForm()
+        public sealed override string PropertiesForm()
         {
             string istr = (IsAssigned() ? iindex.ToString() : "UNDEFINED");
             return string.Format("--sub: id{{{0}}} iindex{{{1}}} {{{2}}}", this.id, istr, ipt.Format());

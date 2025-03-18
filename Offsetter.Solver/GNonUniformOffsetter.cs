@@ -751,10 +751,10 @@ namespace Offsetter.Solver
         {
             if (GConfig.Values.DumpContactCandidatesClient)
             {
-                Debug.WriteLine("{0} candidates for part: {{{1}}}", label, partArc.CanonicalForm());
+                Debug.WriteLine("{0} candidates for part: {{{1}}}", label, partArc.PropertiesForm());
                 for (int i = 0; i < candidates.Count; i++)
                 {
-                    Debug.WriteLine(candidates[i].CanonicalForm());
+                    Debug.WriteLine(candidates[i].PropertiesForm());
                 }
                 Debug.WriteLine("");
             }

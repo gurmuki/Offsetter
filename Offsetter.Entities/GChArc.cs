@@ -144,10 +144,10 @@ namespace Offsetter.Entities
 
         public void Dump()
         {
-            Debug.WriteLine(CanonicalForm());
+            Debug.WriteLine(PropertiesForm());
         }
 
-        public override sealed string CanonicalForm()
+        public override sealed string PropertiesForm()
         {
             return string.Format("charc: ord:{{{0}}} id{{{1}}} pc{{{2}}} rad{{{3}}} sa{{{4}}} ea{{{5}}} dir{{{6}}}",
                 this.ordinal, this.id, pc.Format(), string.Format("{0:0.000000}", rad), sa, ea, dir);

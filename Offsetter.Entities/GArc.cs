@@ -314,7 +314,7 @@ namespace Offsetter.Entities
             }
         }
 
-        public override sealed string CanonicalForm()
+        public override sealed string PropertiesForm()
         {
             return string.Format("{0}: id{{{1}}} ps{{{2}}} pc{{{3}}} pe{{{4}}} rad{{{5}}} dir{{{6}}}",
                 What(), this.id, ps.Format(), pc.Format(), pe.Format(),

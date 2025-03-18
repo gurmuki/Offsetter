@@ -105,7 +105,7 @@ namespace Offsetter.Entities
             return new Closest(this, nearest, dist, uparam);
         }
 
-        public override sealed string CanonicalForm()
+        public override sealed string PropertiesForm()
         {
             return string.Format(" line: id{{{0}}} ps{{{1}}} pe{{{2}}}", this.id, ps.Format(), pe.Format());
         }

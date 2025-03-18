@@ -13,7 +13,7 @@ namespace Offsetter.Entities
         public abstract GCurve Clone(GPoint at);
         public abstract GCurve SplitAt(GPoint pt);
         public abstract GPoint PointAtUparam(double uparam);
-        public abstract string CanonicalForm();
+        public abstract string PropertiesForm();
 
         public GCurve PrevCurve() { return (GCurve)Prev; }
         public GCurve NextCurve() { return (GCurve)Next;  }

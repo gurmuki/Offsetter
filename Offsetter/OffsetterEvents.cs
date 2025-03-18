@@ -71,11 +71,11 @@ namespace Offsetter
         private void MouseUpHandler(object sender, MouseEventArgs e)
         {
             // Log($"Mouse up: ({e.X},{e.Y})");
-            if (canonicalDialog != null)
+            if (propertiesDialog != null)
             {
                 // Ignore all actions excepting curve selection.
                 if (e.Button == MouseButtons.Left)
-                    PropertiesShow(e.Location);
+                    PropertiesDialogUpdate(e.Location);
 
                 return;
             }
@@ -116,7 +116,7 @@ namespace Offsetter
             else if (viewMode == ViewMode.Picking)
             {
                 viewPtLocked = false;
-                PropertiesShow(e.Location);
+                PropertiesDialogUpdate(e.Location);
             }
         }
 
@@ -187,11 +187,11 @@ namespace Offsetter
 
         private void KeyPreviewExecute(Keys keyCode)
         {
-            if (canonicalDialog != null)
+            if (propertiesDialog != null)
             {
                 // Ignore all keys excepting dialog closure.
                 if (keyCode == Keys.Escape)
-                    canonicalDialog.Close();
+                    propertiesDialog.Close();
                 
                 return;
             }
@@ -250,6 +250,8 @@ namespace Offsetter
             }
             else if (keyCode == Keys.P)
             {
+                PropertiesDialogShow();
+
                 viewPtLocked = false;
                 viewMode = ViewMode.Picking;
             }

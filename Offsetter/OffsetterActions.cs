@@ -360,7 +360,7 @@ namespace Offsetter
             wr.LineWidth = (hilight ? 3 : 1);
         }
 
-        private void CanonicalClosedAction()
+        private void PropertiesClosedAction()
         {
             if (selectedCurve != null)
             {
@@ -370,12 +370,26 @@ namespace Offsetter
             }
 
             viewMode = ViewMode.Static;
-            canonicalDialog = null!;
+            propertiesDialog = null!;
 
             MenusEnable(true);
         }
 
-        private void PropertiesShow(Point mouseLocation)
+        private void PropertiesDialogShow()
+        {
+            if (propertiesDialog == null)
+            {
+                MenusEnable(false);
+
+                propertiesDialog = new PropertiesDialog(geoMenuLocation, PropertiesClosedAction);
+                propertiesDialog.ShowDegrees = showDegrees;
+            }
+
+            if (!propertiesDialog.Visible)
+                propertiesDialog.Show(glControl);
+        }
+
+        private void PropertiesDialogUpdate(Point mouseLocation)
         {
             GCurve curve = ViewPick(mouseLocation);
             if (curve == null)
@@ -388,19 +402,7 @@ namespace Offsetter
             Render();
 
             Point screenLocation = glControl.PointToScreen(mouseLocation);
-
-            if (canonicalDialog == null)
-            {
-                MenusEnable(false);
-
-                canonicalDialog = new Canonical(CanonicalClosedAction);
-                canonicalDialog.ShowDegrees = showDegrees;
-            }
-
-            if (!canonicalDialog.Visible)
-                canonicalDialog.Show(glControl);
-
-            canonicalDialog.PropertiesUpdate(screenLocation, curve);
+            propertiesDialog.PropertiesUpdate(screenLocation, curve);
         }
     }
 }
