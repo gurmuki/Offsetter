@@ -7,7 +7,7 @@ namespace Offsetter
     {
         public static void Locate(Form form, Point screenLocation)
         {
-            form.StartPosition = FormStartPosition.Manual;
+            // form.StartPosition = FormStartPosition.Manual;
             form.Location = screenLocation;
         }
     }

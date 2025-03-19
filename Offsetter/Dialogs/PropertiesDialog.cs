@@ -11,58 +11,26 @@ namespace Offsetter
     // bother to "fix". Perhaps my ignorance is getting in the way.
 
     /// <summary>PropertiesDialog is a modeless dialog displaying entity properties.</summary>
-    public partial class PropertiesDialog : Form
+    public partial class PropertiesDialog : SelectionDialog
     {
         private const int PADDING = 8;
         private GCurve curve = null!;
-        private ClosedAction closedAction;
 
-        public delegate void ClosedAction();
+        public PropertiesDialog() : base() { }
 
-        public PropertiesDialog(Point screenLocation, ClosedAction f)
+        /// <summary>Create a modeless dialog for view entity properties.</summary>
+        /// <param name="screenLocation">The screen coordinate where the dialog should be presented.</param>
+        public PropertiesDialog(Point screenLocation)
+            : base(screenLocation)
         {
-            if (f == null)
-                throw new ArgumentNullException();
-
             InitializeComponent();
-
-            closedAction = f;
-
-            FormLocator.Locate(this, screenLocation);
         }
 
         public bool ShowDegrees { get; set; } = false;
 
-        private void PropertiesDialog_Load(object sender, EventArgs e)
-        {
-            endptProperties.Visible = false;
-            arcProperties.Visible = false;
+        public override bool UpdateAllowed { get { return true; } }
 
-            close.Location = new Point(close.Location.X, type.Bottom + PADDING);
-            this.ClientSize = new Size(this.ClientSize.Width, close.Bottom + PADDING);
-        }
-
-        private void Properties_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Visible = false;
-            e.Cancel = true;
-            closedAction();
-        }
-
-        private void close_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void radians_CheckedChanged(object sender, EventArgs e)
-        {
-            ShowDegrees = degrees.Checked;
-
-            ArcAnglesUpdate();
-            Update();
-        }
-
-        public void PropertiesUpdate(Point screenLocation, GCurve curve)
+        public override void Update(GCurve curve)
         {
             this.Focus();
 
@@ -84,6 +52,28 @@ namespace Offsetter
             this.ClientSize = new Size(this.ClientSize.Width, close.Bottom + PADDING);
 
             PropertiesUpdateCore();
+        }
+
+        private void PropertiesDialog_Load(object sender, EventArgs e)
+        {
+            endptProperties.Visible = false;
+            arcProperties.Visible = false;
+
+            close.Location = new Point(close.Location.X, type.Bottom + PADDING);
+            this.ClientSize = new Size(this.ClientSize.Width, close.Bottom + PADDING);
+        }
+
+        private void close_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void radians_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowDegrees = degrees.Checked;
+
+            ArcAnglesUpdate();
+            Update();
         }
 
         private void PropertiesUpdateCore()

@@ -70,11 +70,6 @@ namespace Offsetter
         GBox modelBox = new GBox();
         GBox viewBox = new GBox();
 
-        // Part and Tool are used by NonUniformOffset() and Nest().
-        // These exist to "simplify" related code.
-        private GChain Part { get { return ichains[0]; } }
-        private GChain Tool { get { return ichains[1]; } }
-
         private Dictionary<GCurve, Renderer> rendererMap = new Dictionary<GCurve, Renderer>();
         private Dictionary<GCurve, GBox> boxMap = new Dictionary<GCurve, GBox>();
 
@@ -83,9 +78,14 @@ namespace Offsetter
         // geoMenuLocation is used as a reference point for displaying dialogs.
         private Point geoMenuLocation;
 
-        // Properties is a modeless dialog whose lifetime must be managed.
-        private PropertiesDialog propertiesDialog = null!;
-        private GCurve selectedCurve = null!;
+        // selectionDialog is a modeless dialog whose lifetime must be managed.
+        private SelectionDialog selectionDialog = null!;
+        private List<GCurve> selectedCurves = new List<GCurve>();
+
+        private const string PROPERTIES = "Properties";
+        private const string UNIFORM = "Uniform Offset";
+        private const string NON_UNIFORM = "Non-uniform Offset";
+        private const string NESTING = "Nest";
 
         //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -276,9 +276,9 @@ namespace Offsetter
         private void testFileMenuItem_Click(object sender, EventArgs e) => Test();
 
         // Geometry Menu actions.
-        private void uniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => UniformOffset();
-        private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => NonUniformOffset();
-        private void nestGeometryMenuItem_Click(object sender, EventArgs e) => Nest();
+        private void uniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(UNIFORM);
+        private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(NON_UNIFORM);
+        private void nestGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(NESTING);
         private void decomposeGeometryMenuItem_Click(object sender, EventArgs e) => Decompose();
         private void toolingGeometryMenuItem_Click(object sender, EventArgs e) => Tooling();
         private void reorderGeometryMenuItem_Click(object sender, EventArgs e) => Reorder();

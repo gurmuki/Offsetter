@@ -44,6 +44,10 @@ namespace Offsetter
             }
         }
 
+        // These exist to simplify/clarify code in TestsExecute().
+        private GChain Part { get { return ichains[0]; } }
+        private GChain Tool { get { return ichains[1]; } }
+
         private void TestsExecute(string filePath)
         {
             if (!File.Exists(filePath))

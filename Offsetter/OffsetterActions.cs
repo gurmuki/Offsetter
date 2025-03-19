@@ -100,8 +100,6 @@ namespace Offsetter
         {
             this.Text = "Offsetter";
 
-            // MenusEnable(false);
-
             boxMap.Clear();
             RendererMapClear();
 
@@ -138,74 +136,13 @@ namespace Offsetter
                 // Resize so everything fits nicely in the window.
                 modelBox = modelBox.Resize(1.05);
 
-                selectedCurve = null!;
+                selectedCurves.Clear();
                 ViewBase();
 
                 MenusItemsEnable(true);
 
                 this.Text = string.Format("Offsetter ({0})", Path.GetFileName(path));
             }
-        }
-
-        private void UniformOffset()
-        {
-            OffsetDialog dialog = new OffsetDialog(geoMenuLocation, "Uniform Offset", offsetSide, offsetDist);
-            if (dialog.ShowDialog() != DialogResult.OK)
-                return;
-
-            offsetSide = dialog.OffsetSide;
-            offsetDist = dialog.OffsetDist;
-
-            GChainList results = new GChainList();
-            GUniformOffsetter offsetter = new GUniformOffsetter();
-            offsetter.Offset(ichains, offsetSide, offsetDist, results);
-            if (results.Count <= 0)
-                return;
-
-            ResultsCollate(results);
-            Render();
-
-            ToolingMenuItemEnable(true);
-        }
-
-        private void NonUniformOffset()
-        {
-            OffsetDialog dialog = new OffsetDialog(geoMenuLocation, "Non-uniform Offset", offsetSide);
-            if (dialog.ShowDialog() != DialogResult.OK)
-                return;
-
-            offsetSide = dialog.OffsetSide;
-
-            GChainList results = new GChainList();
-            GNonUniformOffseter ch = new GNonUniformOffseter(false);
-            ch.Offset(Part, Tool, offsetSide, 0, results);
-            if (results.Count <= 0)
-                return;
-
-            ResultsCollate(results);
-            Render();
-
-            ToolingMenuItemEnable(true);
-        }
-
-        private void Nest()
-        {
-            OffsetDialog dialog = new OffsetDialog(geoMenuLocation, "Nest", offsetSide);
-            if (dialog.ShowDialog() != DialogResult.OK)
-                return;
-
-            offsetSide = dialog.OffsetSide;
-
-            GChainList results = new GChainList();
-            GNonUniformOffseter ch = new GNonUniformOffseter(true);
-            ch.Offset(Part, Tool, offsetSide, 0, results);
-            if (results.Count <= 0)
-                return;
-
-            ResultsCollate(results);
-            Render();
-
-            ToolingMenuItemEnable(false);
         }
 
         private void ResultsCollate(GChainList chains)
@@ -304,22 +241,20 @@ namespace Offsetter
 
         private void ChainTabulate(GChain chain, double chordalTol)
         {
-            // TODO: A better way to do this? I'm not real happy exposing chain traversal.
-            GCurve curve = chain.FirstCurve();
+            GChainIterator iter = new GChainIterator(chain);
+
+            GCurve curve = iter.FirstCurve();
             while (curve != null)
             {
-                if (!curve.IsA(T.SUBCHN))
-                {
-                    GBox box = curve.box;
-                    modelBox += box;
-                    boxMap[curve] = box;
+                GBox box = curve.box;
+                modelBox += box;
+                boxMap[curve] = box;
 
-                    VertexList verts = new VertexList();
-                    curve.Tabulate(verts, chordalTol);
-                    rendererMap[curve] = new WireframeRenderer(wireframeShader, verts, colorMap[chain.ChainType]);
-                }
+                VertexList verts = new VertexList();
+                curve.Tabulate(verts, chordalTol);
+                rendererMap[curve] = new WireframeRenderer(wireframeShader, verts, colorMap[chain.ChainType]);
 
-                curve = curve.NextCurve();
+                curve = iter.NextCurve();
             }
         }
 
@@ -351,58 +286,42 @@ namespace Offsetter
             }
         }
 
-        private void CurveHilight(GCurve curve, bool hilight)
+        private void UniformDialogAcceptAction(object? sender, EventArgs e)
         {
-            if (curve == null)
+            UniformOffsetDialog dialog = (UniformOffsetDialog)selectionDialog;
+
+            offsetSide = dialog.OffsetSide;
+            offsetDist = dialog.OffsetDist;
+
+            GChainList results = new GChainList();
+            GUniformOffsetter offsetter = new GUniformOffsetter();
+            offsetter.Offset(dialog.Chains, offsetSide, offsetDist, results);
+            if (results.Count <= 0)
                 return;
 
-            WireframeRenderer wr = (WireframeRenderer)rendererMap[curve];
-            wr.LineWidth = (hilight ? 3 : 1);
-        }
-
-        private void PropertiesClosedAction()
-        {
-            if (selectedCurve != null)
-            {
-                CurveHilight(selectedCurve, false);
-                selectedCurve = null!;
-                Render();
-            }
-
-            viewMode = ViewMode.Static;
-            propertiesDialog = null!;
-
-            MenusEnable(true);
-        }
-
-        private void PropertiesDialogShow()
-        {
-            if (propertiesDialog == null)
-            {
-                MenusEnable(false);
-
-                propertiesDialog = new PropertiesDialog(geoMenuLocation, PropertiesClosedAction);
-                propertiesDialog.ShowDegrees = showDegrees;
-            }
-
-            if (!propertiesDialog.Visible)
-                propertiesDialog.Show(glControl);
-        }
-
-        private void PropertiesDialogUpdate(Point mouseLocation)
-        {
-            GCurve curve = ViewPick(mouseLocation);
-            if (curve == null)
-                return;
-
-            CurveHilight(selectedCurve, false);
-
-            selectedCurve = curve;
-            CurveHilight(selectedCurve, true);
+            ResultsCollate(results);
             Render();
 
-            Point screenLocation = glControl.PointToScreen(mouseLocation);
-            propertiesDialog.PropertiesUpdate(screenLocation, curve);
+            ToolingMenuItemEnable(true);
+        }
+
+        private void NonUniformDialogAcceptAction(object? sender, EventArgs e)
+        {
+            NonUniformOffsetDialog dialog = (NonUniformOffsetDialog)selectionDialog;
+            bool nesting = (dialog.Text == NESTING);
+
+            offsetSide = dialog.OffsetSide;
+
+            GChainList results = new GChainList();
+            GNonUniformOffseter ch = new GNonUniformOffseter(nesting);
+            ch.Offset(dialog.Shape, dialog.Tool, offsetSide, 0, results);
+            if (results.Count <= 0)
+                return;
+
+            ResultsCollate(results);
+            Render();
+
+            ToolingMenuItemEnable(true);
         }
     }
 }

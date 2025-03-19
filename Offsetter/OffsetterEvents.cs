@@ -1,5 +1,4 @@
-﻿using Offsetter.Entities;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Offsetter
 {
@@ -71,11 +70,11 @@ namespace Offsetter
         private void MouseUpHandler(object sender, MouseEventArgs e)
         {
             // Log($"Mouse up: ({e.X},{e.Y})");
-            if (propertiesDialog != null)
+            if (selectionDialog != null)
             {
                 // Ignore all actions excepting curve selection.
                 if (e.Button == MouseButtons.Left)
-                    PropertiesDialogUpdate(e.Location);
+                    SelectionDialogUpdate(e.Location);
 
                 return;
             }
@@ -116,7 +115,7 @@ namespace Offsetter
             else if (viewMode == ViewMode.Picking)
             {
                 viewPtLocked = false;
-                PropertiesDialogUpdate(e.Location);
+                SelectionDialogShow(PROPERTIES);
             }
         }
 
@@ -187,12 +186,19 @@ namespace Offsetter
 
         private void KeyPreviewExecute(Keys keyCode)
         {
-            if (propertiesDialog != null)
+            if (selectionDialog != null)
             {
-                // Ignore all keys excepting dialog closure.
                 if (keyCode == Keys.Escape)
-                    propertiesDialog.Close();
-                
+                {
+                    selectionDialog.Close();
+                }
+                else if (keyCode == Keys.F)
+                {
+                    ViewsClear();
+                    ViewBase();
+                    Render();
+                }
+
                 return;
             }
 
@@ -250,7 +256,7 @@ namespace Offsetter
             }
             else if (keyCode == Keys.P)
             {
-                PropertiesDialogShow();
+                SelectionDialogShow(PROPERTIES);
 
                 viewPtLocked = false;
                 viewMode = ViewMode.Picking;

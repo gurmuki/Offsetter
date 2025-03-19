@@ -358,11 +358,9 @@
             Controls.Add(type);
             Controls.Add(endptProperties);
             Controls.Add(arcProperties);
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             Name = "PropertiesDialog";
             ShowInTaskbar = false;
             Text = "Properties";
-            FormClosing += Properties_FormClosing;
             Load += PropertiesDialog_Load;
             endptProperties.ResumeLayout(false);
             endptProperties.PerformLayout();
