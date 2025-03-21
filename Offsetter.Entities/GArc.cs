@@ -314,6 +314,24 @@ namespace Offsetter.Entities
             }
         }
 
+        public override void Digitize(VertexList verts, double delta)
+        {
+            double da = ea - sa;
+
+            double arclen = (System.Math.Abs(da) / GConst.TWO_PI) * rad;
+            if (arclen < GConst.SMALL)
+                return;
+
+            int count = (int)(arclen / delta) + 1;
+            da = da / count;
+
+            for (int i = 0; i <= count; ++i)
+            {
+                GVec vec = (new GVec(sa + (i * da))) * rad;
+                verts.PointAdd(pc + vec);
+            }
+        }
+
         public override sealed string PropertiesForm()
         {
             return string.Format("{0}: id{{{1}}} ps{{{2}}} pc{{{3}}} pe{{{4}}} rad{{{5}}} dir{{{6}}}",

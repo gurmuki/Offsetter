@@ -92,5 +92,8 @@ namespace Offsetter.Entities
 
         public override void Tabulate(VertexList verts, double chordalTol)
         { return; }
+
+        public override void Digitize(VertexList verts, double delta)
+        { throw new NotSupportedException(); }
     }
 }

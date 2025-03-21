@@ -15,7 +15,7 @@ namespace Offsetter
         private GChain tool = null!;
 
         /// <summary>Client actions to perform when this dialog's Accept button is clicked.</summary>
-        public event EventHandler AcceptAction = null!;
+        public event EventHandler Action = null!;
 
         /// <summary>Create a modeless dialog for obtaining non-uniform offset input.</summary>
         /// <param name="screenLocation">The screen coordinate where the dialog should be presented.</param>
@@ -70,8 +70,8 @@ namespace Offsetter
         {
             OffsetSide = (left.Checked ? GConst.LEFT : GConst.RIGHT);
 
-            if (AcceptAction != null)
-                AcceptAction.Invoke(this, EventArgs.Empty);
+            if (Action != null)
+                Action.Invoke(this, EventArgs.Empty);
         }
 
         private void close_Click(object sender, EventArgs e)
@@ -83,17 +83,6 @@ namespace Offsetter
 
         private void toolID_Enter(object sender, EventArgs e) { previousActive = toolID; }
 
-         private void left_CheckedChanged(object sender, EventArgs e) { this.ActiveControl = previousActive; }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                this.Close();
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
+        private void left_CheckedChanged(object sender, EventArgs e) { this.ActiveControl = previousActive; }
     }
 }

@@ -123,16 +123,5 @@ namespace Offsetter
             string s = string.Format("{0:0.000000}", val);
             return (s.Contains('.') ? s.TrimEnd('0').TrimEnd('.') : s);
         }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                this.Close();
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
     }
 }

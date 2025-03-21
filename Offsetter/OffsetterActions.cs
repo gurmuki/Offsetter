@@ -1,12 +1,21 @@
-﻿using Offsetter.Entities;
+﻿using Offsetter.Dialogs;
+using Offsetter.Entities;
 using Offsetter.Io;
 using Offsetter.Math;
 using Offsetter.Solver;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media.TextFormatting;
 
 namespace Offsetter
 {
@@ -120,7 +129,7 @@ namespace Offsetter
                 double chordalTol = ViewChordTol();
 
                 foreach (var chain in chains)
-                { Collate(chain, chordalTol); }
+                { Collate(chain, null, chordalTol); }
 
                 double xc = modelBox.xc;
                 double yc = modelBox.yc;
@@ -145,7 +154,7 @@ namespace Offsetter
             }
         }
 
-        private void ResultsCollate(GChainList chains)
+        private void ResultsCollate(GChainList chains, GChain tool)
         {
             GBox tempA = modelBox.Resize(0.95);
             GBox tempB = new GBox(tempA);
@@ -166,7 +175,7 @@ namespace Offsetter
             for (int indx = 0; indx < chains.Count; ++indx)
             {
                 GChain chain = chains[indx];
-                Collate(chain, chordalTol);
+                Collate(chain, tool, chordalTol);
             }
         }
 
@@ -177,58 +186,12 @@ namespace Offsetter
 
             for (int indx = 0; indx < ochains.Count; ++indx)
             { modelBox += ochains[indx].box; }
-
-            ToolingMenuItemEnable(ochains.Count > 0);
         }
 
-        private void Tooling()
-        {
-            toolingEnabled = !toolingEnabled;
-            if (toolingEnabled)
-                ToolingAdd(offsetDist, ochains);
-            else
-                tchains.Clear();
-        }
-
-        private void ToolingAdd(double dist, GChainList chains)
-        {
-            int nchains = chains.Count;
-
-            for (int indx = 0; indx < nchains; ++indx)
-            {
-                GChain ichain = chains[indx];
-
-                GCurve curve = ichain.FirstCurve();
-                while (true)
-                {
-                    if (curve == null)
-                        break;
-
-                    if (!curve.IsA(T.SUBCHN))
-                    {
-                        if (curve == ichain.FirstCurve())
-                            tchains.Add(ToolCreate(curve, dist, 0));
-
-                        if (curve.IsA(T.ARC) && ((GArc)curve).IsCircle)
-                            tchains.Add(ToolCreate(curve, dist, 0.25));
-
-                        tchains.Add(ToolCreate(curve, dist, 0.5));
-
-                        if (curve.IsA(T.ARC) && ((GArc)curve).IsCircle)
-                            tchains.Add(ToolCreate(curve, dist, 0.75));
-
-                        tchains.Add(ToolCreate(curve, dist, 1));
-                    }
-
-                    curve = curve.NextCurve();
-                }
-            }
-        }
-
-        private GChain ToolCreate(GCurve curve, double radius, double u)
+        private GChain ToolCreate(double radius)
         {
             GChain tool = new GChain(GChainType.TOOL);
-            tool.Append(GArc.CircleCreate(curve.PointAtUparam(u), radius, GConst.CW));
+            tool.Append(GArc.CircleCreate(new GPoint(0, 0), radius, GConst.CW));
             return tool;
         }
 
@@ -258,7 +221,7 @@ namespace Offsetter
             }
         }
 
-        private void Collate(GChain chain, double chordalTol)
+        private void Collate(GChain chain, GChain? tool, double chordalTol)
         {
             ChainTabulate(chain, chordalTol);
 
@@ -274,6 +237,10 @@ namespace Offsetter
                 case GChainType.PATH:
                     chain.layer = Layer.PATH;
                     ochains.Add(chain);
+
+                    if (tool != null)
+                        tchains[chain] = tool;
+
                     break;
 
                 case GChainType.TOOL:
@@ -286,7 +253,7 @@ namespace Offsetter
             }
         }
 
-        private void UniformDialogAcceptAction(object? sender, EventArgs e)
+        private void UniformDialogAction(object? sender, EventArgs e)
         {
             UniformOffsetDialog dialog = (UniformOffsetDialog)selectionDialog;
 
@@ -299,13 +266,13 @@ namespace Offsetter
             if (results.Count <= 0)
                 return;
 
-            ResultsCollate(results);
-            Render();
+            GChain tool = ToolCreate(offsetDist);
 
-            ToolingMenuItemEnable(true);
+            ResultsCollate(results, tool);
+            Render();
         }
 
-        private void NonUniformDialogAcceptAction(object? sender, EventArgs e)
+        private void NonUniformDialogAction(object? sender, EventArgs e)
         {
             NonUniformOffsetDialog dialog = (NonUniformOffsetDialog)selectionDialog;
             bool nesting = (dialog.Text == NESTING);
@@ -318,10 +285,115 @@ namespace Offsetter
             if (results.Count <= 0)
                 return;
 
-            ResultsCollate(results);
+            ResultsCollate(results, dialog.Tool);
             Render();
+        }
 
-            ToolingMenuItemEnable(true);
+        private async void AnimateDialogAction(object? sender, GChain path)
+        {
+            if (path == null)
+            {
+                // The AnimateDialog "Stop" button was clicked.
+                cancelTokenSource.Cancel();
+
+                ToolRendererDispose();
+            }
+            else
+            {
+                ToolRendererCreate(path);
+
+                // The AnimateDialog "Start" button was clicked.
+                cancelTokenSource = new CancellationTokenSource();
+                cancelToken = cancelTokenSource.Token;
+                var task = Task.Run(() =>
+                {
+                    Animate(path, cancelToken);
+                }, cancelToken);
+
+                try
+                {
+                    await task;
+
+                    ToolRendererDispose();
+                }
+                catch (OperationCanceledException)
+                {
+                    Debug.WriteLine($"AnimateDialogAction: {nameof(OperationCanceledException)} thrown\n");
+                }
+            }
+        }
+
+        private void Animate(GChain path, CancellationToken cancellationToken)
+        {
+            GChainIterator iter = new GChainIterator(path);
+
+            GCurve curve = iter.FirstCurve();
+            while (curve != null)
+            {
+                if (cancelToken.IsCancellationRequested)
+                    cancelToken.ThrowIfCancellationRequested();
+
+                if (curve.box.Overlaps(viewBox))
+                    AnimateAlongCurve(curve, cancellationToken);
+
+                curve = iter.NextCurve();
+            }
+        }
+
+        // Creates the toolRenderer for the tool associated with this path.
+        private void ToolRendererCreate(GChain path)
+        {
+            GChain tool = tchains[path];
+            double chordalTol = ViewChordTol();
+
+            VertexList verts = new VertexList();
+            tool.Tabulate(verts, chordalTol);
+            toolRenderer = new WireframeRenderer(wireframeShader, verts, colorMap[GChainType.TOOL]);
+        }
+
+        private void ToolRendererDispose()
+        {
+            if ((selectionDialog != null) && (selectionDialog.GetType() == typeof(AnimateDialog)))
+                ((AnimateDialog)selectionDialog).Reset();
+
+            if (toolRenderer == null)
+                return;
+
+            toolRenderer = null!;
+            Render();
+        }
+
+        private void AnimateAlongCurve(GCurve curve, CancellationToken cancellationToken)
+        {
+            double delta = ViewDist();
+            if (curve.IsA(T.ARC))
+                delta /= 2;
+
+            // Calculate the tool display locations.
+            VertexList verts = new VertexList();
+            curve.Digitize(verts, delta);
+
+            foreach (Vertex v in verts)
+            {
+                if (cancelToken.IsCancellationRequested)
+                    cancelToken.ThrowIfCancellationRequested();
+
+                toolOrigin.X = v.x;
+                toolOrigin.Y = v.y;
+
+                Invoke((Action)(() =>
+                {
+                    Render();
+                }));
+
+                DateTime start = DateTime.Now;
+                while (true)
+                {
+                    TimeSpan elapsed = DateTime.Now - start;
+                    if (elapsed.TotalMilliseconds >= 2)
+                        break;
+                }
+            }
         }
     }
 }

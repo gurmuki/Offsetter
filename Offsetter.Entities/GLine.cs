@@ -70,7 +70,9 @@ namespace Offsetter.Entities
 
         public sealed override GVec TangentAt(double uparam)
         {
-            return GVec.UnitVec(ps, pe, true);
+            GVec vec = GVec.UnitVec(ps, pe);
+            vec.Normalize();
+            return vec;
         }
 
         public override sealed Closest Closest(GPoint pt, double pickTol = double.MaxValue)
@@ -114,6 +116,22 @@ namespace Offsetter.Entities
         {
             verts.PointAdd(this.ps);
             verts.PointAdd(this.pe);
+        }
+
+        public override void Digitize(VertexList verts, double delta)
+        {
+            double arclen = GProperty.ArcLen(ps, pe);
+            if (arclen < GConst.SMALL)
+                return;
+
+            int count = (int)(arclen / delta) + 1;
+            delta = arclen / count;
+
+            GVec vec = GVec.UnitVec(ps, pe);
+            for (int i = 0; i <= count; ++i)
+            {
+                verts.PointAdd(ps + (vec * (i * delta)));
+            }
         }
     }
 }

@@ -138,14 +138,10 @@ namespace Offsetter.Entities
         }
 
         public override sealed Closest Closest(GPoint pt, double pickTol)
-        {
-            throw new NotSupportedException();
-        }
+        { throw new NotSupportedException(); }
 
         public void Dump()
-        {
-            Debug.WriteLine(PropertiesForm());
-        }
+        { Debug.WriteLine(PropertiesForm()); }
 
         public override sealed string PropertiesForm()
         {
@@ -154,8 +150,9 @@ namespace Offsetter.Entities
         }
 
         public override void Tabulate(VertexList verts, double chordalTol)
-        {
-            throw new NotSupportedException();
-        }
+        { throw new NotSupportedException(); }
+
+        public override void Digitize(VertexList verts, double delta)
+        { throw new NotSupportedException(); }
     }
 }

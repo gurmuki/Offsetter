@@ -53,6 +53,11 @@ namespace Offsetter
             shader.SetMatrix4(name, data);
         }
 
+        public void SetOrigin(string name, Vector2 origin)
+        {
+            shader.SetVector2(name, origin);
+        }
+
         public virtual void Render()
         {
             if (!IsEnabled)

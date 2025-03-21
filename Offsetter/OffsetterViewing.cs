@@ -175,6 +175,12 @@ namespace Offsetter
             return (delta * ((XClip(2) + 1) / 2));
         }
 
+        private double ViewDist()
+        {
+            double delta = ViewHalfDelta(viewBox);
+            return (delta * ((XClip(2) + 1) / 2));
+        }
+
         /// <summary>Regenerate display lists so arcs look smooth.</summary>
         /// <param name="box">The bounds of the model within the view.</param>
         /// <remarks>Optionally, we could do away with 'box' and directly use 'modelBox'</remarks>

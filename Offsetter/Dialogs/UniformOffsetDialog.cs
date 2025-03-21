@@ -16,7 +16,7 @@ namespace Offsetter
         private List<GChain> chains = new List<GChain>();
 
         /// <summary>Client actions to perform when this dialog's Accept button is clicked.</summary>
-        public event EventHandler AcceptAction = null!;
+        public event EventHandler Action = null!;
 
         /// <summary>Create a modeless dialog for obtaining uniform offset input.</summary>
         /// <param name="screenLocation">The screen coordinate where the dialog should be presented.</param>
@@ -47,7 +47,7 @@ namespace Offsetter
             UpdateAndEnable();
         }
 
-        public void Remove(GCurve curve)
+        public override void Remove(GCurve curve)
         {
             this.Focus();
 
@@ -96,8 +96,8 @@ namespace Offsetter
             if (double.TryParse(offset.Text, out dval))
                 OffsetDist = dval;
 
-            if (AcceptAction != null)
-                AcceptAction.Invoke(this, EventArgs.Empty);
+            if (Action != null)
+                Action.Invoke(this, EventArgs.Empty);
         }
 
         private void close_Click(object sender, EventArgs e)
@@ -111,16 +111,5 @@ namespace Offsetter
 
         // Send the cursor back to the previously active control.
         private void left_CheckedChanged(object sender, EventArgs e) { ActiveControl = previousActive; }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                this.Close();
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
     }
 }

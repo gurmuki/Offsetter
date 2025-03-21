@@ -1,17 +1,11 @@
-﻿using Offsetter.Entities;
-using Offsetter.Io;
-using Offsetter.Math;
-using Offsetter.Solver;
+﻿using Offsetter.Dialogs;
+using Offsetter.Entities;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace Offsetter
 {
-    using GChainList = List<GChain>;
-
     public partial class Offsetter : Form
     {
         private void SelectionDialogShow(string dialogTitle)
@@ -27,28 +21,38 @@ namespace Offsetter
                 else if (dialogTitle == UNIFORM)
                 {
                     UniformOffsetDialog dialog = new UniformOffsetDialog(geoMenuLocation);
-                    dialog.AcceptAction += UniformDialogAcceptAction;
+                    dialog.Action += UniformDialogAction;
                     dialog.OffsetDist = offsetDist;
                     dialog.OffsetSide = offsetSide;
                     selectionDialog = dialog;
                 }
-                else
+                else if ((dialogTitle == NON_UNIFORM) || (dialogTitle == NESTING))
                 {
                     NonUniformOffsetDialog dialog = new NonUniformOffsetDialog(geoMenuLocation);
-                    dialog.AcceptAction += NonUniformDialogAcceptAction;
+                    dialog.Action += NonUniformDialogAction;
                     dialog.OffsetSide = offsetSide;
                     selectionDialog = dialog;
                 }
+                else if (dialogTitle == ANIMATE)
+                {
+                    AnimateDialog dialog = new AnimateDialog(geoMenuLocation);
+                    dialog.Action += AnimateDialogAction;
+                    selectionDialog = dialog;
+                }
+                else
+                {
+                    throw new NotImplementedException($"{dialogTitle}");
+                }
 
-                selectionDialog.Text = dialogTitle;
-                selectionDialog.ClosedAction += SelectionDialogClosedAction;
+                selectionDialog!.Text = dialogTitle;
+                selectionDialog.ClosedAction += SelectionDialogClosed;
                 selectionDialog.Show(glControl);
 
                 MenusEnable(false);
             }
         }
 
-        private void SelectionDialogClosedAction(object? sender, EventArgs e)
+        private void SelectionDialogClosed(object? sender, EventArgs e)
         {
             SelectedCurvesClear();
 
@@ -69,34 +73,58 @@ namespace Offsetter
             if (curve == null)
                 return;
 
+            GChain chain = curve.Owner;
             if (selectionDialog.Text == PROPERTIES)
             {
                 SelectedCurvesClear();
                 SelectedCurvesAdd(curve);
                 showDegrees = ((PropertiesDialog)selectionDialog).ShowDegrees;
             }
+            else if (selectionDialog.Text == ANIMATE)
+            {
+                if (selectionDialog.Text == ANIMATE)
+                {
+                    if (!IsToolpath(chain))
+                        return;
+                }
+
+                if ((ModifierKeys & Keys.Control) == Keys.Control)
+                {
+                    SelectedChainRemove(chain);
+                    selectionDialog.Remove(curve);
+                    Render();
+                    return;
+                }
+
+                SelectedCurvesClear();
+                SelectedChainAdd(chain);
+            }
             else if (selectionDialog.Text == UNIFORM)
             {
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
                 {
-                    SelectedChainRemove(curve.Owner);
-                    ((UniformOffsetDialog)selectionDialog).Remove(curve);
+                    SelectedChainRemove(chain);
+                    selectionDialog.Remove(curve);
                     Render();
                     return;
                 }
-                else
-                {
-                    SelectedChainAdd(curve.Owner);
-                }
+
+                SelectedChainAdd(chain);
             }
             else
             {
-                SelectedChainAdd(curve.Owner);
+                SelectedChainAdd(chain);
             }
 
             Render();
 
             selectionDialog.Update(curve);
+        }
+
+        private bool IsToolpath(GChain chain)
+        {
+            GChainType type = chain.ChainType;
+            return ((type == GChainType.PATH) || (type == GChainType.POCKET) || (type == GChainType.ISLAND));
         }
 
         private void SelectedChainAdd(GChain chain)

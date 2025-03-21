@@ -30,6 +30,7 @@ namespace Offsetter.Entities
         public abstract Closest Closest(GPoint pt, double pickTol = double.MaxValue);
 
         public abstract void Tabulate(VertexList verts, double chordalTol);
+        public abstract void Digitize(VertexList verts, double delta);
     }
 
     public class T

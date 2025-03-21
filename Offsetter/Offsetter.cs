@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Offsetter
@@ -52,8 +53,10 @@ namespace Offsetter
         private GChainList ichains = new GChainList();
         private GChainList ochains = new GChainList();
 
-        private bool toolingEnabled = false;
-        private GChainList tchains = new GChainList();
+        // A map between path and tool.
+        private Dictionary<GChain, GChain> tchains = new Dictionary<GChain, GChain>();
+        private WireframeRenderer toolRenderer = null!;
+        private Vector2 toolOrigin = new Vector2(0, 0);
 
         private int offsetSide = GConst.LEFT;
         private double offsetDist = 1;
@@ -70,7 +73,7 @@ namespace Offsetter
         GBox modelBox = new GBox();
         GBox viewBox = new GBox();
 
-        private Dictionary<GCurve, Renderer> rendererMap = new Dictionary<GCurve, Renderer>();
+        private Dictionary<GEntity, Renderer> rendererMap = new Dictionary<GEntity, Renderer>();
         private Dictionary<GCurve, GBox> boxMap = new Dictionary<GCurve, GBox>();
 
         private Dictionary<GChainType, VColor> colorMap = new Dictionary<GChainType, VColor>();
@@ -86,6 +89,11 @@ namespace Offsetter
         private const string UNIFORM = "Uniform Offset";
         private const string NON_UNIFORM = "Non-uniform Offset";
         private const string NESTING = "Nest";
+        private const string ANIMATE = "Animate";
+
+        // For user-intiated termination of tasks.
+        private CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+        private CancellationToken cancelToken;
 
         //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -142,6 +150,11 @@ namespace Offsetter
             tchains.Clear();
         }
 
+        private void Offsetter_LocationChanged(object sender, EventArgs e)
+        {
+            geoMenuLocation = this.PointToScreen(new Point(50, 25));
+        }
+
         private void GLSetup()
         {
             ShadersCreate();
@@ -155,74 +168,6 @@ namespace Offsetter
             colorMap[GChainType.ISLAND] = VColor.RED;
             colorMap[GChainType.PATH] = VColor.RED;
             colorMap[GChainType.TOOL] = VColor.BLUE;
-        }
-
-        private void ShadersCreate()
-        {
-            // The shader code could (of course) be loaded from files.
-            // https://opentk.net/learn/chapter1/8-coordinate-systems.html
-            #region ShaderCodeRegion
-            // Vertex shading code.
-            vWireframeShaderCode =
-                @"#version 330 core
-
-                layout(location = 0) in vec2 vrtx2d;
-
-                vec3 vrtx3d;
-
-                uniform mat4 model;
-
-                void main(void)
-                {
-                    vrtx3d = vec3(vrtx2d, 0);
-
-                    gl_Position = vec4(vrtx3d, 1.0) * model;
-                }";
-
-            // Fragment shading code.
-            fWireframeShaderCode =
-                @"#version 330 core
-
-                out vec4 outputColor;
-
-                uniform vec4 curveColor;
-
-                void main()
-                {
-                    outputColor = curveColor;
-                }";
-
-            // Vertex shading code.
-            vWindowingShaderCode =
-                @"#version 330 core
-
-                layout(location = 0) in vec2 vrtx2d;
-
-                vec3 vrtx3d;
-
-                void main(void)
-                {
-                    vrtx3d = vec3(vrtx2d, 0.1);
-
-                    gl_Position = vec4(vrtx3d, 1.0);
-                }";
-
-            // Fragment shading code.
-            fWindowingShaderCode =
-                @"#version 330 core
-
-                out vec4 outputColor;
-
-                uniform vec4 curveColor;
-
-                void main()
-                {
-                    outputColor = curveColor;
-                }";
-            #endregion
-
-            wireframeShader = Shader.FromCode(vWireframeShaderCode, fWireframeShaderCode);
-            windowingShader = Shader.FromCode(vWindowingShaderCode, fWindowingShaderCode);
         }
 
         private void glControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -280,7 +225,6 @@ namespace Offsetter
         private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(NON_UNIFORM);
         private void nestGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(NESTING);
         private void decomposeGeometryMenuItem_Click(object sender, EventArgs e) => Decompose();
-        private void toolingGeometryMenuItem_Click(object sender, EventArgs e) => Tooling();
         private void reorderGeometryMenuItem_Click(object sender, EventArgs e) => Reorder();
         private void propertiesGeometryMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.P);
 
@@ -290,6 +234,7 @@ namespace Offsetter
         private void zoomViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.Z);
         private void fullViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.F);
         private void previousViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.V);
+        private void animateToolStripMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(ANIMATE);
 
         // Context Menu actions.
         private void panContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.C);
@@ -335,16 +280,75 @@ namespace Offsetter
 
             saveAsContextMenuItem.Enabled = enable;
             saveResultsFileMenuItem.Enabled = enable;
-
-            if (!enable)
-                ToolingMenuItemEnable(false);
         }
 
-        private void ToolingMenuItemEnable(bool enable)
+        private void ShadersCreate()
         {
-            toolingGeometryMenuItem.Enabled = enable;
-            if (!enable)
-                toolingEnabled = false;
+            // The shader code could (of course) be loaded from files.
+            // https://opentk.net/learn/chapter1/8-coordinate-systems.html
+            #region ShaderCodeRegion
+            // Vertex shading code.
+            vWireframeShaderCode =
+                @"#version 330 core
+
+                layout(location = 0) in vec2 vrtx2d;
+
+                vec3 vrtx3d;
+
+                uniform mat4 model;
+                uniform vec2 origin;
+
+                void main(void)
+                {
+                    vrtx3d = vec3(vrtx2d + origin, 0);
+
+                    gl_Position = vec4(vrtx3d, 1.0) * model;
+                }";
+
+            // Fragment shading code.
+            fWireframeShaderCode =
+                @"#version 330 core
+
+                out vec4 outputColor;
+
+                uniform vec4 curveColor;
+
+                void main()
+                {
+                    outputColor = curveColor;
+                }";
+
+            // Vertex shading code.
+            vWindowingShaderCode =
+                @"#version 330 core
+
+                layout(location = 0) in vec2 vrtx2d;
+
+                vec3 vrtx3d;
+
+                void main(void)
+                {
+                    vrtx3d = vec3(vrtx2d, 0.1);
+
+                    gl_Position = vec4(vrtx3d, 1.0);
+                }";
+
+            // Fragment shading code.
+            fWindowingShaderCode =
+                @"#version 330 core
+
+                out vec4 outputColor;
+
+                uniform vec4 curveColor;
+
+                void main()
+                {
+                    outputColor = curveColor;
+                }";
+            #endregion
+
+            wireframeShader = Shader.FromCode(vWireframeShaderCode, fWireframeShaderCode);
+            windowingShader = Shader.FromCode(vWindowingShaderCode, fWindowingShaderCode);
         }
 
         private void Render()
@@ -361,10 +365,18 @@ namespace Offsetter
                 if (renderer.programID != previousProgramID)
                 {
                     renderer.SetMatrix4("model", model);
+                    renderer.SetOrigin("origin", Vector2.Zero);
+
                     previousProgramID = renderer.programID;
                 }
 
                 renderer.Render();
+            }
+
+            if (toolRenderer != null)
+            {
+                toolRenderer.SetOrigin("origin", toolOrigin);
+                toolRenderer.Render();
             }
 
             if (windowingObject.IsEnabled)

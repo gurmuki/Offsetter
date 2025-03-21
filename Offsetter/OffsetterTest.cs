@@ -109,7 +109,7 @@ namespace Offsetter
                             GLogger.Log(ex.StackTrace);
                     }
 
-                    ResultsCollate(results);
+                    ResultsCollate(results, null!);
                     PreviewKeyEvent(Keys.F);
 
                     string resultPath = LogWrite(dxfPath, param);

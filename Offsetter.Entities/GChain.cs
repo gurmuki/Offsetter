@@ -907,9 +907,9 @@ namespace Offsetter.Entities
         // file:///C:/_sandbox/Offsetter/docs/ArcContains.png
         private GContainment ArcContains(GArc arc, GPoint pt)
         {
-            GVec sVec = GVec.UnitVec(arc.pc, arc.ps, false);
-            GVec eVec = GVec.UnitVec(arc.pc, arc.pe, false);
-            GVec mVec = GVec.UnitVec(arc.pc, pt, false);
+            GVec sVec = GVec.UnitVec(arc.pc, arc.ps);
+            GVec eVec = GVec.UnitVec(arc.pc, arc.pe);
+            GVec mVec = GVec.UnitVec(arc.pc, pt);
 
             double mCs = mVec ^ sVec;
             double mCe = mVec ^ eVec;
@@ -1150,6 +1150,9 @@ namespace Offsetter.Entities
                 curve = curve.NextCurve();
             }
         }
+
+        public override void Digitize(VertexList verts, double delta)
+            { throw new NotSupportedException(); }
     }
 
     public class GCurveIterator

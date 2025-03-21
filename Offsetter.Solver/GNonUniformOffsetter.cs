@@ -724,7 +724,9 @@ namespace Offsetter.Solver
                             }
                             else
                             {
-                                GVec tanB = GVec.UnitVec(terminal.pe, ms, true);
+                                GVec tanB = GVec.UnitVec(terminal.pe, ms);
+                                tanB.Normalize();
+
                                 double dot = tanA * tanB;
                                 if (System.Math.Abs(dot) >= (1 - GConst.VECTOR_SMALL))
                                     ilist.Add(chTool.curr);

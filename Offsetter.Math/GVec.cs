@@ -19,6 +19,7 @@ namespace Offsetter.Math
         {
             Normalize();
         }
+
         public static GVec UnitVec(double dx, double dy, bool normalize)
         {
             GVec vec = new GVec(dx, dy);
@@ -37,9 +38,9 @@ namespace Offsetter.Math
             return vec;
         }
 
-        public static GVec UnitVec(GPoint ps, GPoint pe, bool normalize)
+        public static GVec UnitVec(GPoint ps, GPoint pe)
         {
-            return UnitVec((pe.x - ps.x), (pe.y - ps.y), normalize);
+            return UnitVec((pe.x - ps.x), (pe.y - ps.y));
         }
 
         public double x { get; set; }
@@ -59,6 +60,14 @@ namespace Offsetter.Math
                 this.x /= len;
                 this.y /= len;
             }
+        }
+
+        public void Normalize()
+        {
+            if (System.Math.Abs(this.x) == 1)
+                this.y = 0;
+            else if (System.Math.Abs(this.y) == 1)
+                this.x = 0;
         }
 
         public GVec UnitVec()
@@ -136,14 +145,6 @@ namespace Offsetter.Math
 
                 return false;
             }
-        }
-
-        private void Normalize()
-        {
-            if (System.Math.Abs(this.x) == 1)
-                this.y = 0;
-            else if (System.Math.Abs(this.y) == 1)
-                this.x = 0;
         }
     }
 }
