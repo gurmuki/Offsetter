@@ -35,6 +35,7 @@ namespace Offsetter.Math
         UNASSIGNED = 0,
         PART = 1,
         PATH = 2,
-        TOOL = 3
+        TOOL = 3,
+        INTERMEDIATE = 4
     }
 }

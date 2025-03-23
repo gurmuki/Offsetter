@@ -15,6 +15,7 @@ namespace Offsetter.Solver
         public bool DumpChChains { get; set; } = false;
         public bool DumpPath { get; set; } = false;
         public bool DumpRpts { get; set; } = false;
+        public bool Augment { get; set; } = false;
     }
 
     public class GConfig

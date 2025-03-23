@@ -11,7 +11,7 @@ namespace Offsetter.Entities
     using GCurveList = List<GCurve>;
 
     public enum GRelativePosition { PRE, POST }
-    public enum GChainType { UNKNOWN, POCKET, ISLAND, PART, TOOL, PATH }
+    public enum GChainType { UNKNOWN, POCKET, ISLAND, PART, TOOL, PATH, INTERMEDIATE }
     public enum GContainment { IGNORE, ON, INSIDE, OUTSIDE }
 
     // TODO: GChain isA GEntity & GCurve isA GEntity & GEntity isA GDNode so, indirectly,
@@ -983,6 +983,7 @@ namespace Offsetter.Entities
                 case GChainType.PART: return "PART";
                 case GChainType.TOOL: return "TOOL";
                 case GChainType.PATH: return "PATH";
+                case GChainType.INTERMEDIATE: return "INTERMEDIATE";
                 default: return "UNKNOWN";
             }
         }

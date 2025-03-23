@@ -1,5 +1,6 @@
 ﻿using Offsetter.Graphics;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using System;
 
 namespace Offsetter
@@ -45,15 +46,12 @@ namespace Offsetter
 
         public override void Render()
         {
-            if (!IsEnabled)
-                return;
-
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferID);
             GL.BufferData(BufferTarget.ArrayBuffer, data.Length * Vertex.Size, data, BufferUsageHint.StaticDraw);
 
             GL.UseProgram(programID);
             GL.BindVertexArray(vertexArray);
-            shader.SetVector4("curveColor", colorTable[color]);
+            shader.SetVector4("curveColor", (IsMasked ? colorTable[VColor.MASKED] : colorTable[color]));
 
             GL.LineWidth(LineWidth);
             GL.DrawArrays(drawingMode, 0, data.Length);

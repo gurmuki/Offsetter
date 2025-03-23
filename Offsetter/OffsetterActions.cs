@@ -59,6 +59,10 @@ namespace Offsetter
                 ViewsClear();
                 ViewBase();
                 Render();
+
+                inputMask = false;
+                pathMask = false;
+                intermediateMask = false;
             }
         }
 
@@ -122,14 +126,10 @@ namespace Offsetter
             dxfReader = new GDxfReader();
             if (dxfReader.Read(path, chains))
             {
+                selectedCurves.Clear();
+
                 foreach (var chain in chains)
                 { modelBox += chain.box; }
-
-                double delta = ViewHalfDelta(modelBox);
-                double chordalTol = ViewChordTol();
-
-                foreach (var chain in chains)
-                { Collate(chain, null, chordalTol); }
 
                 double xc = modelBox.xc;
                 double yc = modelBox.yc;
@@ -137,6 +137,7 @@ namespace Offsetter
                 double dy = modelBox.dy / 2;
 
                 // Ensure modelBox is square.
+                double delta = ViewHalfDelta(modelBox);
                 delta = ((dx > dy) ? dx : dy);
                 modelBox = new GBox(
                     xc - delta, yc - delta,
@@ -145,8 +146,11 @@ namespace Offsetter
                 // Resize so everything fits nicely in the window.
                 modelBox = modelBox.Resize(1.05);
 
-                selectedCurves.Clear();
                 ViewBase();
+
+                double chordalTol = ViewChordTol();
+                foreach (var chain in chains)
+                { Collate(chain, null, chordalTol); }
 
                 MenusItemsEnable(true);
 
@@ -159,24 +163,15 @@ namespace Offsetter
             GBox tempA = modelBox.Resize(0.95);
             GBox tempB = new GBox(tempA);
 
-            for (int indx = 0; indx < chains.Count; ++indx)
-            {
-                GChain chain = chains[indx];
-                if (chain.ChainType == GChainType.PART)
-                    chain.layer = Layer.PART;
-                else
-                    tempB += chain.box;
-            }
+            foreach (var chain in chains)
+            { tempB += chain.box; }
 
             if ((tempB.dx != tempA.dx) || (tempB.dy != tempA.dy))
                 modelBox = tempB.Resize(1.05);  // The new chains extended the bounding box.
 
             double chordalTol = ViewChordTol();
-            for (int indx = 0; indx < chains.Count; ++indx)
-            {
-                GChain chain = chains[indx];
-                Collate(chain, tool, chordalTol);
-            }
+            foreach (var chain in chains)
+            { Collate(chain, tool, chordalTol); }
         }
 
         private void Decompose()
@@ -248,6 +243,11 @@ namespace Offsetter
                     ochains.Add(chain);
                     break;
 
+                case GChainType.INTERMEDIATE:
+                    chain.layer = Layer.INTERMEDIATE;
+                    ochains.Add(chain);
+                    break;
+
                 default:
                     throw new NotSupportedException();
             }
@@ -255,7 +255,7 @@ namespace Offsetter
 
         private void UniformDialogAction(object? sender, EventArgs e)
         {
-            UniformOffsetDialog dialog = (UniformOffsetDialog)selectionDialog;
+            UniformOffsetDialog dialog = (UniformOffsetDialog)modelessDialog;
 
             offsetSide = dialog.OffsetSide;
             offsetDist = dialog.OffsetDist;
@@ -274,7 +274,7 @@ namespace Offsetter
 
         private void NonUniformDialogAction(object? sender, EventArgs e)
         {
-            NonUniformOffsetDialog dialog = (NonUniformOffsetDialog)selectionDialog;
+            NonUniformOffsetDialog dialog = (NonUniformOffsetDialog)modelessDialog;
             bool nesting = (dialog.Text == NESTING);
 
             offsetSide = dialog.OffsetSide;
@@ -353,8 +353,8 @@ namespace Offsetter
 
         private void ToolRendererDispose()
         {
-            if ((selectionDialog != null) && (selectionDialog.GetType() == typeof(AnimateDialog)))
-                ((AnimateDialog)selectionDialog).Reset();
+            if ((modelessDialog != null) && (modelessDialog.GetType() == typeof(AnimateDialog)))
+                ((AnimateDialog)modelessDialog).Reset();
 
             if (toolRenderer == null)
                 return;

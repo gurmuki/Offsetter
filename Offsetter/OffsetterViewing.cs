@@ -67,6 +67,9 @@ namespace Offsetter
             Closest closest = new NotClosest();
             foreach (GChain chain in ichains)
             {
+                if (IsMasked(chain))
+                    continue;
+
                 Closest candidate = chain.Closest(mpt, pickTol);
                 if (candidate.Distance < closest.Distance)
                     closest = candidate;
@@ -74,12 +77,21 @@ namespace Offsetter
 
             foreach (GChain chain in ochains)
             {
+                if (IsMasked(chain))
+                    continue;
+
                 Closest candidate = chain.Closest(mpt, pickTol);
                 if (candidate.Distance < closest.Distance)
                     closest = candidate;
             }
 
             return closest.Curve;
+        }
+
+        private bool IsMasked(GChain chain)
+        {
+            GChainIterator iter = new GChainIterator(chain);
+            return (rendererMap[iter.FirstCurve()].IsMasked == true);
         }
 
         private void ViewPush()
@@ -224,8 +236,15 @@ namespace Offsetter
                 VertexList verts = new VertexList();
                 arc.Tabulate(verts, chordalTol);
 
-                VColor color = rendererMap[arc].color;
-                rendererMap[arc] = new WireframeRenderer(wireframeShader, verts, color);
+                // Retain the color and masking attributes.
+                Renderer renderer = rendererMap[arc];
+                VColor color = renderer.color;
+                bool isMasked = renderer.IsMasked;
+
+                renderer = new WireframeRenderer(wireframeShader, verts, color);
+                renderer.IsMasked = isMasked;
+
+                rendererMap[arc] = renderer;
             }
         }
 

@@ -81,8 +81,8 @@ namespace Offsetter
         // geoMenuLocation is used as a reference point for displaying dialogs.
         private Point geoMenuLocation;
 
-        // selectionDialog is a modeless dialog whose lifetime must be managed.
-        private SelectionDialog selectionDialog = null!;
+        // A modeless dialog whose lifetime must be managed.
+        private ModelessDialog modelessDialog = null!;
         private List<GCurve> selectedCurves = new List<GCurve>();
 
         private const string PROPERTIES = "Properties";
@@ -94,6 +94,10 @@ namespace Offsetter
         // For user-intiated termination of tasks.
         private CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
         private CancellationToken cancelToken;
+
+        private bool inputMask;
+        private bool pathMask;
+        private bool intermediateMask;
 
         //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -128,6 +132,10 @@ namespace Offsetter
             MenusItemsEnable(false);
 
             geoMenuLocation = this.PointToScreen(new Point(50, 25));
+            
+            inputMask = false;
+            pathMask = false;
+            intermediateMask = false;
         }
 
         private void Offsetter_FormClosing(object sender, FormClosingEventArgs e)
@@ -168,6 +176,7 @@ namespace Offsetter
             colorMap[GChainType.ISLAND] = VColor.RED;
             colorMap[GChainType.PATH] = VColor.RED;
             colorMap[GChainType.TOOL] = VColor.BLUE;
+            colorMap[GChainType.INTERMEDIATE] = VColor.INTERMEDIATE;
         }
 
         private void glControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -234,7 +243,8 @@ namespace Offsetter
         private void zoomViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.Z);
         private void fullViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.F);
         private void previousViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.V);
-        private void animateToolStripMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(ANIMATE);
+        private void animateViewMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(ANIMATE);
+        private void maskViewMenuItem_Click(object sender, EventArgs e) => MaskDialogShow();
 
         // Context Menu actions.
         private void panContextMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.C);
@@ -270,6 +280,8 @@ namespace Offsetter
             zoomViewMenuItem.Enabled = (enable && haveInputGeometry);
             fullViewMenuItem.Enabled = (enable && haveInputGeometry);
             previousViewMenuItem.Enabled = (enable && haveInputGeometry);
+            animateViewMenuItem.Enabled = (enable && haveInputGeometry);
+            maskViewMenuItem.Enabled = (enable && haveInputGeometry);
 
             // Context Menu Items.
             panContextMenuItem.Enabled = (enable && haveInputGeometry);
@@ -358,10 +370,31 @@ namespace Offsetter
             GL.ClearColor(Color.White);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
+            // Perhaps there's a better, more efficient, way to do this.
+            MaskedRender(true);
+            MaskedRender(false);
+
+            if (toolRenderer != null)
+            {
+                toolRenderer.SetOrigin("origin", toolOrigin);
+                toolRenderer.Render();
+            }
+
+            if (!windowingObject.IsMasked)
+                windowingObject.Render();
+
+            glControl.SwapBuffers();
+        }
+
+        private void MaskedRender(bool masked)
+        {
             int previousProgramID = -1;
             foreach (var pair in rendererMap)
             {
                 Renderer renderer = pair.Value;
+                if (renderer.IsMasked != masked)
+                    continue;
+
                 if (renderer.programID != previousProgramID)
                 {
                     renderer.SetMatrix4("model", model);
@@ -372,17 +405,6 @@ namespace Offsetter
 
                 renderer.Render();
             }
-
-            if (toolRenderer != null)
-            {
-                toolRenderer.SetOrigin("origin", toolOrigin);
-                toolRenderer.Render();
-            }
-
-            if (windowingObject.IsEnabled)
-                windowingObject.Render();
-
-            glControl.SwapBuffers();
         }
 
         private void RendererMapClear()

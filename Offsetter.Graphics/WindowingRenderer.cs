@@ -11,7 +11,7 @@ namespace Offsetter
             : base(shader, new Vertex[4], VColor.RED)
         {
             count = 0;
-            IsEnabled = false;
+            IsMasked = true;
             LineWidth = 2;
 
             // Override the defaut which is PrimitiveType.LineStrip.
@@ -25,7 +25,7 @@ namespace Offsetter
         public void Clear()
         {
             count = 0;
-            IsEnabled = false;
+            IsMasked = true;
         }
 
         // Returns: [xmin, ymin, xmax, ymax]
@@ -93,7 +93,7 @@ namespace Offsetter
             bool hasArea = ((data[2].x != data[0].x) && (data[2].y != data[0].y));
             count = (hasArea ? 2 : 1);
 
-            IsEnabled = (count == 2);
+            IsMasked = (count != 2);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace Offsetter
 {
@@ -70,10 +71,10 @@ namespace Offsetter
         private void MouseUpHandler(object sender, MouseEventArgs e)
         {
             // Log($"Mouse up: ({e.X},{e.Y})");
-            if (selectionDialog != null)
+            if (modelessDialog != null)
             {
                 // Ignore all actions excepting curve selection.
-                if (e.Button == MouseButtons.Left)
+                if ((e.Button == MouseButtons.Left) && IsSelectionDialog(modelessDialog))
                     SelectionDialogUpdate(e.Location);
 
                 return;
@@ -186,11 +187,11 @@ namespace Offsetter
 
         private void KeyPreviewExecute(Keys keyCode)
         {
-            if (selectionDialog != null)
+            if (modelessDialog != null)
             {
                 if (keyCode == Keys.Escape)
                 {
-                    selectionDialog.Close();
+                    modelessDialog.Close();
                 }
                 else if (keyCode == Keys.F)
                 {
@@ -261,6 +262,14 @@ namespace Offsetter
                 viewPtLocked = false;
                 viewMode = ViewMode.Picking;
             }
+        }
+
+        private bool IsSelectionDialog(ModelessDialog dialog)
+        {
+            if (dialog == null)
+                throw new ArgumentNullException();
+
+            return (dialog.GetType().BaseType == typeof(SelectionDialog));
         }
     }
 }

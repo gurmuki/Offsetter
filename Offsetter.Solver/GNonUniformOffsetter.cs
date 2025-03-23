@@ -11,7 +11,15 @@ namespace Offsetter.Solver
 
     public class GNonUniformOffseter
     {
+        private bool nesting;
+
         public GNonUniformOffseter(bool nesting) { this.nesting = nesting; }
+
+        /// <summary>
+        /// When true, intermediate chains are returned in the results
+        /// from Offset(). Said chains show how the part and tool are split.
+        /// </summary>
+        public bool ResultsAugment { get; set; } = false;
 
         // PREREQUISITE: The tool must be drawn about (0, 0).
         public void Offset(GChain part, GChain tool, int side, double stockAllowance, GChainList results)
@@ -26,10 +34,16 @@ namespace Offsetter.Solver
                 // Makes more sense to offset the tool.
             }
 
-            ArcsSplit(part);
-            ArcsSplit(tool);
+            // Oooops. We shouldn't be modifying the input chains because
+            // doing so causes problems downstream (ie. to graphics).
+            GPoint origin = new GPoint(0, 0);
+            GChain splitPart = part.Clone(origin);
+            GChain splitTool = tool.Clone(origin);
 
-            DoIt(part, tool, side, results);
+            ArcsSplit(splitPart);
+            ArcsSplit(splitTool);
+
+            DoIt(splitPart, splitTool, side, results);
 
 #if NESTING_BOOLEAN
             if (nesting)
@@ -236,8 +250,11 @@ namespace Offsetter.Solver
                 }
             }
 
-            results.Add(ChainCreate(chPart, GChainType.PART));
-            results.Add(ChainCreate(chTool, GChainType.TOOL));
+            if (GConfig.Values.Augment)
+            {
+                results.Add(ChainCreate(chPart, GChainType.INTERMEDIATE));
+                results.Add(ChainCreate(chTool, GChainType.INTERMEDIATE));
+            }
 
 #if NESTING_BOOLEAN
             if (nesting)
@@ -1359,12 +1376,16 @@ namespace Offsetter.Solver
                 sang = eang;
             }
         }
-
-        private bool nesting;
     }
 
     internal class GChChain
     {
+        private GChain chain;
+        public GChArc curr;
+
+        // Experimental
+        SortedDictionary<int, GChArc> arcs = new SortedDictionary<int, GChArc>();
+
         public GChChain(GChain chain, GChainType type)
         {
             Debug.Assert(chain.IsClosed, "GChChain() - requires closed chain");
@@ -2051,12 +2072,6 @@ namespace Offsetter.Solver
 
             return false;
         }
-
-        private GChain chain;
-        public GChArc curr;
-
-        // Experimental
-        SortedDictionary<int, GChArc> arcs = new SortedDictionary<int, GChArc>();
     }
 
     internal class GChSolve

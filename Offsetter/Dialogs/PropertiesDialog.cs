@@ -16,8 +16,6 @@ namespace Offsetter
         private const int PADDING = 8;
         private GCurve curve = null!;
 
-        public PropertiesDialog() : base() { }
-
         /// <summary>Create a modeless dialog for view entity properties.</summary>
         /// <param name="screenLocation">The screen coordinate where the dialog should be presented.</param>
         public PropertiesDialog(Point screenLocation)

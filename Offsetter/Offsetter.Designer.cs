@@ -67,7 +67,8 @@ namespace Offsetter
             fullViewMenuItem = new ToolStripMenuItem();
             previousViewMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
-            animateToolStripMenuItem = new ToolStripMenuItem();
+            animateViewMenuItem = new ToolStripMenuItem();
+            maskViewMenuItem = new ToolStripMenuItem();
             saveAsContextMenuItem = new ToolStripMenuItem();
             viewPopMenu = new ContextMenuStrip(components);
             panContextMenuItem = new ToolStripMenuItem();
@@ -199,7 +200,7 @@ namespace Offsetter
             // 
             // viewMenu
             // 
-            viewMenu.DropDownItems.AddRange(new ToolStripItem[] { panViewMenuItem, windowViewMenuItem, zoomViewMenuItem, viewMenuSeparator1, fullViewMenuItem, previousViewMenuItem, toolStripSeparator1, animateToolStripMenuItem });
+            viewMenu.DropDownItems.AddRange(new ToolStripItem[] { panViewMenuItem, windowViewMenuItem, zoomViewMenuItem, viewMenuSeparator1, fullViewMenuItem, previousViewMenuItem, toolStripSeparator1, animateViewMenuItem, maskViewMenuItem });
             viewMenu.Name = "viewMenu";
             viewMenu.Size = new Size(44, 20);
             viewMenu.Text = "View";
@@ -208,7 +209,7 @@ namespace Offsetter
             // 
             panViewMenuItem.Name = "panViewMenuItem";
             panViewMenuItem.ShortcutKeyDisplayString = "C";
-            panViewMenuItem.Size = new Size(161, 22);
+            panViewMenuItem.Size = new Size(180, 22);
             panViewMenuItem.Text = "Pan";
             panViewMenuItem.Click += panViewMenuItem_Click;
             // 
@@ -216,7 +217,7 @@ namespace Offsetter
             // 
             windowViewMenuItem.Name = "windowViewMenuItem";
             windowViewMenuItem.ShortcutKeyDisplayString = "W";
-            windowViewMenuItem.Size = new Size(161, 22);
+            windowViewMenuItem.Size = new Size(180, 22);
             windowViewMenuItem.Text = "Window";
             windowViewMenuItem.Click += windowViewMenuItem_Click;
             // 
@@ -224,20 +225,20 @@ namespace Offsetter
             // 
             zoomViewMenuItem.Name = "zoomViewMenuItem";
             zoomViewMenuItem.ShortcutKeyDisplayString = "Z";
-            zoomViewMenuItem.Size = new Size(161, 22);
+            zoomViewMenuItem.Size = new Size(180, 22);
             zoomViewMenuItem.Text = "Zoom";
             zoomViewMenuItem.Click += zoomViewMenuItem_Click;
             // 
             // viewMenuSeparator1
             // 
             viewMenuSeparator1.Name = "viewMenuSeparator1";
-            viewMenuSeparator1.Size = new Size(158, 6);
+            viewMenuSeparator1.Size = new Size(177, 6);
             // 
             // fullViewMenuItem
             // 
             fullViewMenuItem.Name = "fullViewMenuItem";
             fullViewMenuItem.ShortcutKeyDisplayString = "F";
-            fullViewMenuItem.Size = new Size(161, 22);
+            fullViewMenuItem.Size = new Size(180, 22);
             fullViewMenuItem.Text = "Full View";
             fullViewMenuItem.Click += fullViewMenuItem_Click;
             // 
@@ -245,21 +246,21 @@ namespace Offsetter
             // 
             previousViewMenuItem.Name = "previousViewMenuItem";
             previousViewMenuItem.ShortcutKeyDisplayString = "V";
-            previousViewMenuItem.Size = new Size(161, 22);
+            previousViewMenuItem.Size = new Size(180, 22);
             previousViewMenuItem.Text = "Previous View";
             previousViewMenuItem.Click += previousViewMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(158, 6);
+            toolStripSeparator1.Size = new Size(177, 6);
             // 
-            // animateToolStripMenuItem
+            // animateViewMenuItem
             // 
-            animateToolStripMenuItem.Name = "animateToolStripMenuItem";
-            animateToolStripMenuItem.Size = new Size(161, 22);
-            animateToolStripMenuItem.Text = "Animate";
-            animateToolStripMenuItem.Click += animateToolStripMenuItem_Click;
+            animateViewMenuItem.Name = "animateViewMenuItem";
+            animateViewMenuItem.Size = new Size(180, 22);
+            animateViewMenuItem.Text = "Animate";
+            animateViewMenuItem.Click += animateViewMenuItem_Click;
             // 
             // saveAsContextMenuItem
             // 
@@ -359,6 +360,13 @@ namespace Offsetter
             glControl.Text = "glControl1";
             glControl.PreviewKeyDown += glControl_PreviewKeyDown;
             // 
+            // maskViewMenuItem
+            // 
+            maskViewMenuItem.Name = "maskViewMenuItem";
+            maskViewMenuItem.Size = new Size(180, 22);
+            maskViewMenuItem.Text = "Mask";
+            maskViewMenuItem.Click += maskViewMenuItem_Click;
+            // 
             // Offsetter
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -425,6 +433,7 @@ namespace Offsetter
         private ToolStripMenuItem propertiesGeometryMenuItem;
         private ToolStripMenuItem propertiesContextMenuItem;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripMenuItem animateToolStripMenuItem;
+        private ToolStripMenuItem animateViewMenuItem;
+        private ToolStripMenuItem maskViewMenuItem;
     }
 }

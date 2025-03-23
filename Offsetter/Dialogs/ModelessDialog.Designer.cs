@@ -1,6 +1,6 @@
 ﻿namespace Offsetter
 {
-    partial class SelectionDialog
+    partial class ModelessDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -30,14 +30,15 @@
         {
             SuspendLayout();
             // 
-            // SelectionDialog
+            // ModelessDialog
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(395, 271);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            Name = "SelectionDialog";
+            Name = "ModelessDialog";
             Text = "<title>";
+            FormClosing += ModelessDialog_FormClosing;
             ResumeLayout(false);
         }
 
