@@ -6,16 +6,10 @@ using Offsetter.Solver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Media.TextFormatting;
 
 namespace Offsetter
 {
@@ -275,12 +269,11 @@ namespace Offsetter
         private void NonUniformDialogAction(object? sender, EventArgs e)
         {
             NonUniformOffsetDialog dialog = (NonUniformOffsetDialog)modelessDialog;
-            bool nesting = (dialog.Text == NESTING);
 
             offsetSide = dialog.OffsetSide;
 
             GChainList results = new GChainList();
-            GNonUniformOffseter ch = new GNonUniformOffseter(nesting);
+            GNonUniformOffsetter ch = new GNonUniformOffsetter(dialog.Nesting);
             ch.Offset(dialog.Shape, dialog.Tool, offsetSide, 0, results);
             if (results.Count <= 0)
                 return;

@@ -81,7 +81,7 @@
             Controls.Add(pathID);
             Controls.Add(label1);
             Name = "AnimateDialog";
-            Text = "AnimateDialog";
+            Text = "Animate";
             FormClosing += AnimateDialog_FormClosing;
             Load += AnimateDialog_Load;
             ResumeLayout(false);

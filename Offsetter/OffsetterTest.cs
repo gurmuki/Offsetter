@@ -90,12 +90,12 @@ namespace Offsetter
                         }
                         else if (param.Test == GConst.NONUNIFORM)
                         {
-                            GNonUniformOffseter ch = new GNonUniformOffseter(false);
+                            GNonUniformOffsetter ch = new GNonUniformOffsetter(false);
                             ch.Offset(Part, Tool, param.Side, param.Dist, results);
                         }
                         else if (param.Test == GConst.NEST)
                         {
-                            GNonUniformOffseter ch = new GNonUniformOffseter(true);
+                            GNonUniformOffsetter ch = new GNonUniformOffsetter(true);
                             ch.Offset(Part, Tool, param.Side, param.Dist, results);
                         }
 

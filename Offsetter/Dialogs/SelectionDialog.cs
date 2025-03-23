@@ -8,6 +8,9 @@ namespace Offsetter
     /// <summary>A modeless selection dialog supporting curve selection.</summary>
     public partial class SelectionDialog : ModelessDialog
     {
+        /// <summary>Required by the IDE form designer.</summary>
+        protected SelectionDialog() : base() { }
+
         /// <summary>Create a modeless selection dialog supporting curve selection.</summary>
         /// <param name="screenLocation">The initial display position (screen coordinate).</param>
         protected SelectionDialog(Point screenLocation)

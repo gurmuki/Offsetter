@@ -154,7 +154,7 @@ namespace Offsetter
             Controls.Add(accept);
             Name = "UniformOffsetDialog";
             StartPosition = FormStartPosition.Manual;
-            Text = "Offset";
+            Text = "Uniform Offset";
             Load += UniformOffsetDialog_Load;
             uniformPanel.ResumeLayout(false);
             uniformPanel.PerformLayout();

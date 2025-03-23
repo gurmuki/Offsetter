@@ -2,7 +2,6 @@
 using Offsetter.Entities;
 using Offsetter.Math;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -10,51 +9,67 @@ namespace Offsetter
 {
     public partial class Offsetter : Form
     {
-        private void SelectionDialogShow(string dialogTitle)
+        private void PropertiesDialogShow()
         {
-            if (modelessDialog == null)
-            {
-                if (dialogTitle == PROPERTIES)
-                {
-                    PropertiesDialog dialog = new PropertiesDialog(geoMenuLocation);
-                    dialog.ShowDegrees = showDegrees;
-                    modelessDialog = dialog;
-                }
-                else if (dialogTitle == UNIFORM)
-                {
-                    UniformOffsetDialog dialog = new UniformOffsetDialog(geoMenuLocation);
-                    dialog.Action += UniformDialogAction;
-                    dialog.OffsetDist = offsetDist;
-                    dialog.OffsetSide = offsetSide;
-                    modelessDialog = dialog;
-                }
-                else if ((dialogTitle == NON_UNIFORM) || (dialogTitle == NESTING))
-                {
-                    NonUniformOffsetDialog dialog = new NonUniformOffsetDialog(geoMenuLocation);
-                    dialog.Action += NonUniformDialogAction;
-                    dialog.OffsetSide = offsetSide;
-                    modelessDialog = dialog;
-                }
-                else if (dialogTitle == ANIMATE)
-                {
-                    AnimateDialog dialog = new AnimateDialog(geoMenuLocation);
-                    dialog.Action += AnimateDialogAction;
-                    modelessDialog = dialog;
-                }
-                else
-                {
-                    throw new NotImplementedException($"{dialogTitle}");
-                }
+            if (modelessDialog != null)
+                return;
 
-                modelessDialog!.Text = dialogTitle;
-                modelessDialog.ClosedAction += SelectionDialogClosed;
-                modelessDialog.Show(glControl);
+            PropertiesDialog dialog = new PropertiesDialog(geoMenuLocation);
+            dialog.ShowDegrees = showDegrees;
 
-                MenusEnable(false);
-            }
+            ModelessDialogShow(dialog);
         }
 
-        private void SelectionDialogClosed(object? sender, EventArgs e)
+        private void UniformOffsetDialogShow()
+        {
+            if (modelessDialog != null)
+                return;
+
+            UniformOffsetDialog dialog = new UniformOffsetDialog(geoMenuLocation);
+            dialog.Action += UniformDialogAction;
+            dialog.OffsetDist = offsetDist;
+            dialog.OffsetSide = offsetSide;
+
+            ModelessDialogShow(dialog);
+        }
+
+        private void NonUniformOffsetDialogShow(bool nesting)
+        {
+            if (modelessDialog != null)
+                return;
+
+            NonUniformOffsetDialog dialog = new NonUniformOffsetDialog(geoMenuLocation);
+            dialog.Nesting = nesting;
+            dialog.Action += NonUniformDialogAction;
+            dialog.OffsetSide = offsetSide;
+
+            ModelessDialogShow(dialog);
+        }
+
+        private void AnimateDialogShow()
+        {
+            if (modelessDialog != null)
+                return;
+
+            AnimateDialog dialog = new AnimateDialog(geoMenuLocation);
+            dialog.Action += AnimateDialogAction;
+
+            ModelessDialogShow(dialog);
+        }
+
+        private void ModelessDialogShow(ModelessDialog dialog)
+        {
+            if (modelessDialog != null)
+                return;
+
+            modelessDialog = dialog;
+            modelessDialog.ClosedAction += ModelessDialogClosed;
+            modelessDialog.Show(glControl);
+
+            MenusEnable(false);
+        }
+
+        private void ModelessDialogClosed(object? sender, EventArgs e)
         {
             SelectedCurvesClear();
 
@@ -80,19 +95,18 @@ namespace Offsetter
                 return;
 
             GChain chain = curve.Owner;
-            if (dialog.Text == PROPERTIES)
+
+            Type dialogType = dialog.GetType();
+            if (dialogType == typeof(PropertiesDialog))
             {
                 SelectedCurvesClear();
                 SelectedCurvesAdd(curve);
                 showDegrees = ((PropertiesDialog)dialog).ShowDegrees;
             }
-            else if (dialog.Text == ANIMATE)
+            else if (dialogType == typeof(AnimateDialog))
             {
-                if (dialog.Text == ANIMATE)
-                {
-                    if (!IsToolpath(chain))
-                        return;
-                }
+                if (!IsToolpath(chain))
+                    return;
 
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
                 {
@@ -105,7 +119,7 @@ namespace Offsetter
                 SelectedCurvesClear();
                 SelectedChainAdd(chain);
             }
-            else if (dialog.Text == UNIFORM)
+            else if (dialogType == typeof(UniformOffsetDialog))
             {
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
                 {

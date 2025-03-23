@@ -25,6 +25,8 @@ namespace Offsetter
             InitializeComponent();
         }
 
+        public bool Nesting { get; set; } = false;
+
         public int OffsetSide { get; set; } = 0;
 
         public GChain Shape => shape;
@@ -57,6 +59,8 @@ namespace Offsetter
 
         private void NonUniformOffsetDialog_Load(object sender, EventArgs e)
         {
+            Text = (Nesting ? "Nest" : "Non-uniform Offset");
+
             OffsetSide = ((OffsetSide < 0) ? GConst.RIGHT : GConst.LEFT);
 
             left.Checked = (OffsetSide == GConst.LEFT);

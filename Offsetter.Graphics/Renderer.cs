@@ -37,7 +37,7 @@ namespace Offsetter
             colorTable[VColor.GREEN] = new Vector4(0f, 0.8f, 0f, 1f);
             colorTable[VColor.BLUE] = new Vector4(0f, 0f, 1f, 1f);
             colorTable[VColor.INTERMEDIATE] = new Vector4(0.2f, 0.95f, 0.95f, 1f);  // cyan-ish
-            colorTable[VColor.MASKED] = new Vector4(0.8f, 0.8f, 0.8f, 0.05f);       // grey-ish
+            colorTable[VColor.MASKED] = new Vector4(0.9f, 0.9f, 0.9f, 0.05f);       // grey-ish
         }
 
         protected Renderer(Shader shader, int vertexCount, VColor color)

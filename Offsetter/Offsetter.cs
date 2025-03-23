@@ -85,12 +85,6 @@ namespace Offsetter
         private ModelessDialog modelessDialog = null!;
         private List<GCurve> selectedCurves = new List<GCurve>();
 
-        private const string PROPERTIES = "Properties";
-        private const string UNIFORM = "Uniform Offset";
-        private const string NON_UNIFORM = "Non-uniform Offset";
-        private const string NESTING = "Nest";
-        private const string ANIMATE = "Animate";
-
         // For user-intiated termination of tasks.
         private CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
         private CancellationToken cancelToken;
@@ -230,9 +224,9 @@ namespace Offsetter
         private void testFileMenuItem_Click(object sender, EventArgs e) => Test();
 
         // Geometry Menu actions.
-        private void uniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(UNIFORM);
-        private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(NON_UNIFORM);
-        private void nestGeometryMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(NESTING);
+        private void uniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => UniformOffsetDialogShow();
+        private void nonUniformOffsetGeometryMenuItem_Click(object sender, EventArgs e) => NonUniformOffsetDialogShow(false);
+        private void nestGeometryMenuItem_Click(object sender, EventArgs e) => NonUniformOffsetDialogShow(true);
         private void decomposeGeometryMenuItem_Click(object sender, EventArgs e) => Decompose();
         private void reorderGeometryMenuItem_Click(object sender, EventArgs e) => Reorder();
         private void propertiesGeometryMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.P);
@@ -243,7 +237,7 @@ namespace Offsetter
         private void zoomViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.Z);
         private void fullViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.F);
         private void previousViewMenuItem_Click(object sender, EventArgs e) => PreviewKeyEvent(Keys.V);
-        private void animateViewMenuItem_Click(object sender, EventArgs e) => SelectionDialogShow(ANIMATE);
+        private void animateViewMenuItem_Click(object sender, EventArgs e) => AnimateDialogShow();
         private void maskViewMenuItem_Click(object sender, EventArgs e) => MaskDialogShow();
 
         // Context Menu actions.

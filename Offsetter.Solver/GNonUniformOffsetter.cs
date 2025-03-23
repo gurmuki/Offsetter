@@ -9,11 +9,11 @@ namespace Offsetter.Solver
 {
     using GChainList = List<GChain>;
 
-    public class GNonUniformOffseter
+    public class GNonUniformOffsetter
     {
         private bool nesting;
 
-        public GNonUniformOffseter(bool nesting) { this.nesting = nesting; }
+        public GNonUniformOffsetter(bool nesting) { this.nesting = nesting; }
 
         /// <summary>
         /// When true, intermediate chains are returned in the results
@@ -251,10 +251,10 @@ namespace Offsetter.Solver
             }
 
             if (GConfig.Values.Augment)
-            {
                 results.Add(ChainCreate(chPart, GChainType.INTERMEDIATE));
+
+            if (nesting || GConfig.Values.Augment)
                 results.Add(ChainCreate(chTool, GChainType.INTERMEDIATE));
-            }
 
 #if NESTING_BOOLEAN
             if (nesting)

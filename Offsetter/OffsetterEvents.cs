@@ -116,7 +116,7 @@ namespace Offsetter
             else if (viewMode == ViewMode.Picking)
             {
                 viewPtLocked = false;
-                SelectionDialogShow(PROPERTIES);
+                PropertiesDialogShow();
             }
         }
 
@@ -257,7 +257,7 @@ namespace Offsetter
             }
             else if (keyCode == Keys.P)
             {
-                SelectionDialogShow(PROPERTIES);
+                PropertiesDialogShow();
 
                 viewPtLocked = false;
                 viewMode = ViewMode.Picking;
