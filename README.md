@@ -4,11 +4,11 @@ A Windows application for generating 2D Uniform and Non-Uniform Offset chains (a
 
 <h2>Details</h2>
 
-The Uniform Offsetting implementation (roughly) follows the algorithm described by Hansen & Arbab. Likewise, the Non-Uniform Offsetting (a.k.a. Minkowski Sum) implementation follows the algorithm described by Ramkumar.
+The Uniform Offsetting implementation (roughly) follows the algorithm described by Hansen & Arbab and for Non-Uniform Offsetting (a.k.a. Minkowski Sum) the implementation follows the algorithm described by Ramkumar.
 
 Whereas the Minkowski Sum is typically applied to convex shapes this implementation also supports (limited) concave shapes. Shapes having concavities greatly increase complexity and (as implemented) fails in some cases. Some failures can be seen using the test data nest15a, nest15b and nest16a.
 
-Currently, all input shapes must be DXF profile entities. The input used by non-uniform offsetting requires the first profile to represent the part outline and the second the tool outline. The latter must be centered at the origin (0,0).
+Currently, all input must be DXF profile entities. Non-Uniform Offsetting requires at least two profiles, one representing a part/shape and the other a tool for traversing the shape outline. The tool must be centered at the origin (0,0). When submitting files to automated/batch testing of Non-Uniform Offsetting, the first profile must represent the shape and the second the tool.
 
 Debugging output is configured via the file data\config.json.
 
