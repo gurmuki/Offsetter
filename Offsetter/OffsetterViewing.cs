@@ -187,10 +187,14 @@ namespace Offsetter
             return (delta * ((XClip(2) + 1) / 2));
         }
 
-        private double ViewDist()
+        private double ViewDist(GCurve curve)
         {
             double delta = ViewHalfDelta(viewBox);
-            return (delta * ((XClip(2) + 1) / 2));
+            delta *= ((XClip(2) + 1) / 2);
+            if (curve.IsA(T.ARC))
+                delta /= 4;
+
+            return delta;
         }
 
         /// <summary>Regenerate display lists so arcs look smooth.</summary>

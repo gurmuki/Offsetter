@@ -22,7 +22,8 @@ namespace Offsetter
             FormLocator.Locate(this, screenLocation);
         }
 
-        public virtual bool UpdateAllowed { get { throw new NotImplementedException(); } }
+        /// <summary>Intended to return true when entity selection is allowed.</summary>
+        public virtual bool SelectionAllowed { get { throw new NotImplementedException(); } }
 
         public virtual void Update(GCurve curve) { throw new NotImplementedException(); }
 

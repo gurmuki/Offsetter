@@ -32,7 +32,8 @@ namespace Offsetter
         public GChain Shape => shape;
         public GChain Tool => tool;
 
-        public override bool UpdateAllowed { get { return ((ActiveControl == shapeID) || (ActiveControl == toolID)); } }
+        /// <summary>Returns true when entity selection is allowed.</summary>
+        public override bool SelectionAllowed { get { return ((ActiveControl == shapeID) || (ActiveControl == toolID)); } }
 
         public override void Update(GCurve curve)
         {

@@ -1,4 +1,5 @@
-﻿using Offsetter.Entities;
+﻿using Offsetter.Dialogs;
+using Offsetter.Entities;
 using Offsetter.Graphics;
 using Offsetter.Io;
 using Offsetter.Math;
@@ -89,10 +90,6 @@ namespace Offsetter
         private CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
         private CancellationToken cancelToken;
 
-        private bool inputMask;
-        private bool pathMask;
-        private bool intermediateMask;
-
         //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
         public Offsetter()
@@ -126,10 +123,8 @@ namespace Offsetter
             MenusItemsEnable(false);
 
             geoMenuLocation = this.PointToScreen(new Point(50, 25));
-            
-            inputMask = false;
-            pathMask = false;
-            intermediateMask = false;
+
+            MaskDialog.MasksClear();
         }
 
         private void Offsetter_FormClosing(object sender, FormClosingEventArgs e)

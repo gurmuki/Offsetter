@@ -32,7 +32,8 @@ namespace Offsetter
 
         public List<GChain> Chains => chains;
 
-        public override bool UpdateAllowed { get { return (ActiveControl == chainIDs); } }
+        /// <summary>Returns true when entity selection is allowed.</summary>
+        public override bool SelectionAllowed { get { return (ActiveControl == chainIDs); } }
 
         public override void Update(GCurve curve)
         {

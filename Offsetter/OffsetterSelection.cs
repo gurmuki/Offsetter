@@ -1,6 +1,5 @@
 ﻿using Offsetter.Dialogs;
 using Offsetter.Entities;
-using Offsetter.Math;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -87,7 +86,7 @@ namespace Offsetter
                 throw new InvalidOperationException();
 
             SelectionDialog dialog = (SelectionDialog)modelessDialog;
-            if (!dialog.UpdateAllowed)
+            if (!dialog.SelectionAllowed)
                 return;
 
             GCurve curve = ViewPick(mouseLocation);
@@ -201,86 +200,6 @@ namespace Offsetter
 
             WireframeRenderer wr = (WireframeRenderer)rendererMap[curve];
             wr.LineWidth = (hilight ? 2 : 1);
-        }
-
-        private void MaskDialogShow()
-        {
-            MaskDialog dialog = new MaskDialog(geoMenuLocation);
-
-            dialog.ClosedAction += MaskDialogClosed;
-            dialog.Action += MaskDialogAction;
-
-            dialog.InputMask = inputMask;
-            dialog.PathMask = pathMask;
-            dialog.IntermediateMask = intermediateMask;
-
-            modelessDialog = dialog;
-            modelessDialog.Show(glControl);
-
-            MenusEnable(false);
-        }
-
-        private void MaskDialogClosed(object? sender, EventArgs e)
-        {
-            modelessDialog.Dispose();
-            modelessDialog = null!;
-
-            MenusEnable(true);
-        }
-
-        private void MaskDialogAction(object? sender, EventArgs e)
-        {
-            MaskDialog dialog = (MaskDialog)modelessDialog;
-
-            if (dialog.InputMask != inputMask)
-            {
-                inputMask = dialog.InputMask;
-                ChainMask(Layer.PART, inputMask);
-            }
-
-            if (dialog.PathMask != pathMask)
-            {
-                pathMask = dialog.PathMask;
-                ChainMask(Layer.PATH, pathMask);
-            }
-
-            if (dialog.IntermediateMask != intermediateMask)
-            {
-                intermediateMask = dialog.IntermediateMask;
-                ChainMask(Layer.INTERMEDIATE, intermediateMask);
-            }
-
-            Render();
-        }
-
-        private void ChainMask(Layer layer, bool mask)
-        {
-            if (layer == Layer.PART)
-            {
-                foreach (var chain in ichains)
-                { ChainMask(chain, mask); }
-            }
-            else
-            {
-                foreach (var chain in ochains)
-                {
-                    if (chain.layer == layer)
-                        ChainMask(chain, mask);
-                }
-            }
-        }
-
-        private void ChainMask(GChain chain, bool mask)
-        {
-            GChainIterator iter = new GChainIterator(chain);
-
-            GCurve curve = iter.FirstCurve();
-            while (curve != null)
-            {
-                rendererMap[curve].IsMasked = mask;
-
-                curve = iter.NextCurve();
-            }
         }
     }
 }

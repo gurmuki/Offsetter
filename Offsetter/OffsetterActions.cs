@@ -54,9 +54,7 @@ namespace Offsetter
                 ViewBase();
                 Render();
 
-                inputMask = false;
-                pathMask = false;
-                intermediateMask = false;
+                MaskDialog.MasksClear();
             }
         }
 
@@ -280,113 +278,6 @@ namespace Offsetter
 
             ResultsCollate(results, dialog.Tool);
             Render();
-        }
-
-        private async void AnimateDialogAction(object? sender, GChain path)
-        {
-            if (path == null)
-            {
-                // The AnimateDialog "Stop" button was clicked.
-                cancelTokenSource.Cancel();
-
-                ToolRendererDispose();
-            }
-            else
-            {
-                ToolRendererCreate(path);
-
-                // The AnimateDialog "Start" button was clicked.
-                cancelTokenSource = new CancellationTokenSource();
-                cancelToken = cancelTokenSource.Token;
-                var task = Task.Run(() =>
-                {
-                    Animate(path, cancelToken);
-                }, cancelToken);
-
-                try
-                {
-                    await task;
-
-                    ToolRendererDispose();
-                }
-                catch (OperationCanceledException)
-                {
-                    Debug.WriteLine($"AnimateDialogAction: {nameof(OperationCanceledException)} thrown\n");
-                }
-            }
-        }
-
-        private void Animate(GChain path, CancellationToken cancellationToken)
-        {
-            GChainIterator iter = new GChainIterator(path);
-
-            GCurve curve = iter.FirstCurve();
-            while (curve != null)
-            {
-                if (cancelToken.IsCancellationRequested)
-                    cancelToken.ThrowIfCancellationRequested();
-
-                if (curve.box.Overlaps(viewBox))
-                    AnimateAlongCurve(curve, cancellationToken);
-
-                curve = iter.NextCurve();
-            }
-        }
-
-        // Creates the toolRenderer for the tool associated with this path.
-        private void ToolRendererCreate(GChain path)
-        {
-            GChain tool = tchains[path];
-            double chordalTol = ViewChordTol();
-
-            VertexList verts = new VertexList();
-            tool.Tabulate(verts, chordalTol);
-            toolRenderer = new WireframeRenderer(wireframeShader, verts, colorMap[GChainType.TOOL]);
-        }
-
-        private void ToolRendererDispose()
-        {
-            if ((modelessDialog != null) && (modelessDialog.GetType() == typeof(AnimateDialog)))
-                ((AnimateDialog)modelessDialog).Reset();
-
-            if (toolRenderer == null)
-                return;
-
-            toolRenderer = null!;
-            Render();
-        }
-
-        private void AnimateAlongCurve(GCurve curve, CancellationToken cancellationToken)
-        {
-            double delta = ViewDist();
-            if (curve.IsA(T.ARC))
-                delta /= 2;
-
-            // Calculate the tool display locations.
-            VertexList verts = new VertexList();
-            curve.Digitize(verts, delta);
-
-            foreach (Vertex v in verts)
-            {
-                if (cancelToken.IsCancellationRequested)
-                    cancelToken.ThrowIfCancellationRequested();
-
-                toolOrigin.X = v.x;
-                toolOrigin.Y = v.y;
-
-                Invoke((Action)(() =>
-                {
-                    Render();
-                }));
-
-                DateTime start = DateTime.Now;
-                while (true)
-                {
-                    TimeSpan elapsed = DateTime.Now - start;
-                    if (elapsed.TotalMilliseconds >= 2)
-                        break;
-                }
-            }
         }
     }
 }

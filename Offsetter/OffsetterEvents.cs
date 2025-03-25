@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Offsetter.Dialogs;
 using System.Windows.Forms;
 
 namespace Offsetter
 {
-    // Keyboard processing functionality.
+    // Keyboard and mouse event handling.
     public partial class Offsetter : Form
     {
         // Hookup the key and mouse event handlers.
@@ -199,6 +199,10 @@ namespace Offsetter
                     ViewBase();
                     Render();
                 }
+                else if (IsAnimateDialog(modelessDialog) && AnimateDialog.IsSpeedKey(keyCode))
+                {
+                    ((AnimateDialog)modelessDialog).SpeedSet(keyCode);
+                }
 
                 return;
             }
@@ -267,9 +271,17 @@ namespace Offsetter
         private bool IsSelectionDialog(ModelessDialog dialog)
         {
             if (dialog == null)
-                throw new ArgumentNullException();
+                return false;
 
             return (dialog.GetType().BaseType == typeof(SelectionDialog));
+        }
+
+        private bool IsAnimateDialog(ModelessDialog dialog)
+        {
+            if (dialog == null)
+                return false;
+
+            return (dialog.GetType() == typeof(AnimateDialog));
         }
     }
 }

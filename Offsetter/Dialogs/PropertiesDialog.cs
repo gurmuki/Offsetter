@@ -2,7 +2,6 @@
 using Offsetter.Math;
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Offsetter
 {
@@ -26,7 +25,8 @@ namespace Offsetter
 
         public bool ShowDegrees { get; set; } = false;
 
-        public override bool UpdateAllowed { get { return true; } }
+        /// <summary>Returns true when entity selection is allowed.</summary>
+        public override bool SelectionAllowed { get { return true; } }
 
         public override void Update(GCurve curve)
         {
