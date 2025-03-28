@@ -39,6 +39,8 @@ namespace Offsetter.Solver
             GPoint origin = new GPoint(0, 0);
             GChain splitPart = part.Clone(origin);
             GChain splitTool = tool.Clone(origin);
+            if (splitTool.Winding == GConst.CW)
+                splitTool.Reverse();
 
             ArcsSplit(splitPart);
             ArcsSplit(splitTool);
