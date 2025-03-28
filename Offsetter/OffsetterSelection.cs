@@ -51,7 +51,7 @@ namespace Offsetter
                 return;
 
             AnimateDialog dialog = new AnimateDialog(geoMenuLocation);
-            dialog.Action += AnimateDialogAction;
+            dialog.Action += AnimateAction;
 
             ModelessDialogShow(dialog);
         }
@@ -107,16 +107,10 @@ namespace Offsetter
                 if (!IsToolpath(chain))
                     return;
 
-                if ((ModifierKeys & Keys.Control) == Keys.Control)
-                {
-                    SelectedChainRemove(chain);
-                    dialog.Remove(curve);
-                    Render();
-                    return;
-                }
-
                 SelectedCurvesClear();
                 SelectedChainAdd(chain);
+
+                // dialog.Reset()
             }
             else if (dialogType == typeof(UniformOffsetDialog))
             {
