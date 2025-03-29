@@ -4,5 +4,6 @@
   "DumpPositionAtClient": false,
   "DumpChChains": false,
   "DumpPath": false,
-  "DumpRpts": false
+  "DumpRpts": false,
+  "Augment":  false
 }
